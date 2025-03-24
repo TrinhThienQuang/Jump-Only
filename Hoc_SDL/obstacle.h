@@ -10,9 +10,11 @@ struct Obstacle {
     int direction;
 };
 
+extern SDL_Texture* gearTexture;
 extern Obstacle obstacles[9];
 
-const int OBSTACLE_SIZE = 40;
+const int OBSTACLE_WIDTH = 70;
+const int OBSTACLE_HEIGHT = 70;
 const int MOVING_OBSTACLE_SPEED = 3;
 
 void renderObstacles();

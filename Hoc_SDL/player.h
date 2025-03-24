@@ -10,11 +10,16 @@ struct Player {
 };
 
 extern Player player;
+extern SDL_Texture* playerTexture;
+extern int playerWidth, playerHeight;
+
 
 const int PLAYER_SIZE = 50;
 const float JUMP_FORCE = -12.0f;
 const float GRAVITY = 0.5f;
 const float MOVE_SPEED = 5.0f;
+const int PLAYER_WIDTH = 50;  
+const int PLAYER_HEIGHT = 50; 
 
 void renderPlayer();
 void updatePlayer();

@@ -1,28 +1,46 @@
-#include "player.h"
+﻿#include "player.h"
 
 Player player;
+SDL_Texture* playerTexture = nullptr;
+int playerWidth, playerHeight;
 
 void renderPlayer() {
-    SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
-    SDL_Rect rect = { (int)player.x, (int)(player.y - cameraY), PLAYER_SIZE, PLAYER_SIZE };
-    SDL_RenderFillRect(renderer, &rect);
+    SDL_Rect playerRect = { player.x, player.y - cameraY, PLAYER_WIDTH, PLAYER_HEIGHT };
+    SDL_RenderCopy(renderer, playerTexture, NULL, &playerRect);
 }
 
 void updatePlayer() {
+    // Áp dụng trọng lực
     player.dy += GRAVITY;
     player.y += player.dy;
     player.x += player.dx;
 
-    if (player.y + PLAYER_SIZE >= LEVEL_HEIGHT) {
-        player.y = LEVEL_HEIGHT - PLAYER_SIZE;
-        player.dy = 0;
+    // Xử lý va chạm với biên màn hình
+    if (player.x < 0) {
+        player.x = 0;
+        player.dx = MOVE_SPEED; // Bật lại khi chạm cạnh trái
+    }
+    if (player.x + PLAYER_WIDTH > SCREEN_WIDTH) {
+        player.x = SCREEN_WIDTH - PLAYER_WIDTH;
+        player.dx = -MOVE_SPEED; // Bật lại khi chạm cạnh phải
     }
 
+    // Tính đáy màn hình theo camera
+    int bottomScreenY = cameraY + SCREEN_HEIGHT;
+
+    // Chỉ xét va chạm đáy khi nhân vật thực sự chạm đáy, tránh lỗi game over ngay
+    if (player.y + PLAYER_HEIGHT >= bottomScreenY - 1) {  
+        player.y = bottomScreenY - PLAYER_HEIGHT;
+        player.dy = JUMP_FORCE; // Bật lên khi chạm đáy
+    }
+
+    // Cập nhật camera
     if (player.y < cameraY + SCREEN_HEIGHT / 2) {
         cameraY = player.y - SCREEN_HEIGHT / 2;
         if (cameraY < 0) cameraY = 0;
     }
 }
+
 
 void handleInput(SDL_Event& event) {
     if (event.type == SDL_KEYDOWN) {
