@@ -14,6 +14,7 @@ const int LEVEL_HEIGHT = 2500;
 extern SDL_Window* window;
 extern SDL_Renderer* renderer;
 extern SDL_Texture* backgroundTexture;
+extern SDL_Texture* spikeTexture;
 
 extern int cameraY;
 

@@ -1,8 +1,12 @@
 ﻿#include "game.h"
+#include "tilemap.h"
 
 SDL_Window* window = nullptr;
 SDL_Renderer* renderer = nullptr;
 SDL_Texture* backgroundTexture = nullptr;
+SDL_Texture* spikeTexture = nullptr; // Texture cho gai nhọn
+SDL_Texture* wallTexture = nullptr;
+
 int cameraY = 0;
 
 bool init() {
@@ -20,7 +24,7 @@ bool init() {
     }
 
     // Tải background
-    SDL_Surface* bgSurface = IMG_Load("background.png");
+    SDL_Surface* bgSurface = IMG_Load("background2.jpg");
     if (!bgSurface) {
         std::cout << "Failed to load background image! Error: " << IMG_GetError() << std::endl;
         return false;
@@ -42,8 +46,21 @@ bool init() {
         std::cout << "Failed to create player texture! Error: " << SDL_GetError() << std::endl;
         return false;
     }
+    // Tải hình ảnh gai
+    spikeTexture = IMG_LoadTexture(renderer, "spike1.png");
+    if (!spikeTexture) {
+        std::cout << "Failed to load spikes image! Error: " << IMG_GetError() << std::endl;
+        return false;
+    }
+
+    // Tải ảnh tường
+    wallTexture = IMG_LoadTexture(renderer, "wall.jpg");
+    if (!wallTexture) {
+        std::cout << "Failed to load wall image! Error: " << IMG_GetError() << std::endl;
+        return false;
+    }
     // Tải vật cản
-    SDL_Surface* gearSurface = IMG_Load("obstacle.png");  // Đường dẫn ảnh bánh răng
+    SDL_Surface* gearSurface = IMG_Load("obstacle.png"); 
     if (!gearSurface) {
         std::cout << "Failed to load gear image! Error: " << IMG_GetError() << std::endl;
         return false;
@@ -63,6 +80,40 @@ void renderBackground() {
     SDL_Rect bgRect = { 0, -cameraY, SCREEN_WIDTH, LEVEL_HEIGHT };
     SDL_RenderCopy(renderer, backgroundTexture, NULL, &bgRect);
 }
+
+
+void renderTileMap() {
+    for (int y = 0; y < MAP_HEIGHT; y++) {
+        for (int x = 0; x < MAP_WIDTH; x++) {
+            SDL_Rect tileRect = { x * TILE_SIZE, y * TILE_SIZE - cameraY, TILE_SIZE, TILE_SIZE };
+            if (tileMap[y][x] == 1 && wallTexture != nullptr) {
+                SDL_RenderCopy(renderer, wallTexture, NULL, &tileRect);
+            }
+        }
+    }
+
+    for (int y = 0; y < MAP_HEIGHT; y++) {
+        for (int x = 0; x < MAP_WIDTH; x++) {
+            SDL_Rect tileRect = { x * TILE_SIZE, y * TILE_SIZE - cameraY, TILE_SIZE, TILE_SIZE };
+
+            // Vẽ gai nhọn (tile 2)
+            if (tileMap[y][x] == 2 && spikeTexture != nullptr) {
+                double angle = 0.0; // Mặc định hướng lên
+                if (y > 0 && tileMap[y - 1][x] == 1) {
+                    angle = 180.0; // Gai nhọn hướng xuống
+                }
+                else if (x > 0 && tileMap[y][x - 1] == 1) {
+                    angle = 90.0; // Gai nhọn hướng trái
+                }
+                else if (x < MAP_WIDTH - 1 && tileMap[y][x + 1] == 1) {
+                    angle = 270.0; // Gai nhọn hướng phải
+                }
+                SDL_RenderCopyEx(renderer, spikeTexture, NULL, &tileRect, angle, NULL, SDL_FLIP_NONE);
+            }
+        }
+    }
+}
+
 
 void gameLoop() {
     bool running = true;
@@ -91,7 +142,8 @@ void gameLoop() {
 
         // **Đảm bảo vẽ background trước**
         renderBackground();
-
+        // Vẽ tường
+        renderTileMap();
         // **Vẽ nhân vật tiếp theo để không bị che**
         renderPlayer();
 

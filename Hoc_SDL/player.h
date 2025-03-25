@@ -12,6 +12,8 @@ struct Player {
 extern Player player;
 extern SDL_Texture* playerTexture;
 extern int playerWidth, playerHeight;
+extern SDL_Texture* spikeTexture;
+
 
 
 const int PLAYER_SIZE = 50;
@@ -24,5 +26,9 @@ const int PLAYER_HEIGHT = 50;
 void renderPlayer();
 void updatePlayer();
 void handleInput(SDL_Event& event);
+
+void loadTextures();
+void cleanupTextures();
+
 
 #endif

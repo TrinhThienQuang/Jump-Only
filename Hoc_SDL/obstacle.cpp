@@ -1,5 +1,6 @@
 ﻿#include "obstacle.h"
 #include "player.h"
+#include "tilemap.h"
 
 Obstacle obstacles[9];
 SDL_Texture* gearTexture = nullptr;
@@ -34,27 +35,49 @@ void updateMovingObstacles() {
 }
 
 bool checkCollision() {
+    // Kiểm tra va chạm với bánh răng (giữ nguyên logic)
     for (int i = 0; i < 9; i++) {
         int obstacleCenterX = obstacles[i].x + OBSTACLE_WIDTH / 2;
         int obstacleCenterY = obstacles[i].y + OBSTACLE_HEIGHT / 2;
         int playerCenterX = player.x + PLAYER_WIDTH / 2;
         int playerCenterY = player.y + PLAYER_HEIGHT / 2;
 
-        // Bán kính bánh răng và bán kính nhân vật (điều chỉnh phù hợp)
         int gearRadius = OBSTACLE_WIDTH / 2;
-        int playerRadius = PLAYER_WIDTH / 3; // Giả sử nhân vật nhỏ hơn
+        int playerRadius = PLAYER_WIDTH / 3;
 
-        // Tính khoảng cách giữa tâm nhân vật và tâm bánh răng
         int dx = playerCenterX - obstacleCenterX;
         int dy = playerCenterY - obstacleCenterY;
         int distanceSquared = dx * dx + dy * dy;
         int minDistance = gearRadius + playerRadius;
 
         if (distanceSquared <= minDistance * minDistance) {
-            return true; // Game Over khi chạm vào viền bánh răng
+            return true; // Game Over khi chạm vào bánh răng
         }
     }
-    return false;
+
+    // Kiểm tra va chạm với tile gai nhọn (chạm bất kỳ góc nào của nhân vật)
+    int left = player.x;
+    int right = player.x + PLAYER_WIDTH - 1;
+    int top = player.y;
+    int bottom = player.y + PLAYER_HEIGHT - 1;
+
+    int corners[4][2] = {
+        {left, top},        // Góc trên trái
+        {right, top},       // Góc trên phải
+        {left, bottom},     // Góc dưới trái
+        {right, bottom}     // Góc dưới phải
+    };
+
+    for (int i = 0; i < 4; i++) {
+        int tileX = corners[i][0] / TILE_SIZE;
+        int tileY = corners[i][1] / TILE_SIZE;
+
+        if (tileX >= 0 && tileX < MAP_WIDTH && tileY >= 0 && tileY < MAP_HEIGHT && tileMap[tileY][tileX] == 2) {
+            return true; // Game Over khi chạm vào tile gai nhọn
+        }
+    }
+
+    return false; // Không có va chạm
 }
 
 
