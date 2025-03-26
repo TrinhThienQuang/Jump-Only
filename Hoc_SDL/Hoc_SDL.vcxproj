@@ -21,12 +21,14 @@
   <ItemGroup>
     <ClCompile Include="game.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="menu.cpp" />
     <ClCompile Include="obstacle.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="tilemap.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h" />
+    <ClInclude Include="menu.h" />
     <ClInclude Include="obstacle.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="tilemap.h" />
@@ -84,7 +86,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LibraryPath>$(LibraryPath)</LibraryPath>
+    <LibraryPath>C:\SDL2\lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -125,8 +127,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Program Files\SDL2_lib\SDL2_image-devel-2.8.5-VC\SDL2_image-2.8.5\lib\x64;C:\Program Files\SDL2_lib\SDL2-devel-2.32.0-VC\SDL2-2.32.0\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2_image.lib;SDL2.lib;SDL2main.lib;Shell32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Program Files\SDL2_lib\SDL2_ttf-devel-2.24.0-VC\SDL2_ttf-2.24.0\lib\x64;C:\Program Files\SDL2_lib\SDL2_image-devel-2.8.5-VC\SDL2_image-2.8.5\lib\x64;C:\Program Files\SDL2_lib\SDL2-devel-2.32.0-VC\SDL2-2.32.0\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2_image.lib;SDL2.lib;SDL2main.lib;Shell32.lib;SDL2_ttf.lib</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copy /Y "C:\Program Files\SDL2_lib\SDL2-devel-2.32.0-VC\SDL2-2.32.0\lib\x64\sdl2.dll" "$(TargetDir)"</Command>

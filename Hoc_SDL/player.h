@@ -27,8 +27,6 @@ void renderPlayer();
 void updatePlayer();
 void handleInput(SDL_Event& event);
 
-void loadTextures();
-void cleanupTextures();
 
 
 #endif

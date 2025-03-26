@@ -7,9 +7,9 @@
 #include "player.h"
 #include "obstacle.h"
 
-const int SCREEN_WIDTH = 800;
-const int SCREEN_HEIGHT = 600;
-const int LEVEL_HEIGHT = 2500;
+const int SCREEN_WIDTH = 1400;
+const int SCREEN_HEIGHT = 800;
+const int LEVEL_HEIGHT = 4000;
 
 extern SDL_Window* window;
 extern SDL_Renderer* renderer;

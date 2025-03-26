@@ -1,12 +1,14 @@
 ﻿#include "game.h"
 #include "tilemap.h"
+#include "obstacle.h"
 
 SDL_Window* window = nullptr;
 SDL_Renderer* renderer = nullptr;
 SDL_Texture* backgroundTexture = nullptr;
 SDL_Texture* spikeTexture = nullptr; // Texture cho gai nhọn
 SDL_Texture* wallTexture = nullptr;
-
+SDL_Texture* commonObstacleTexture = nullptr;
+SDL_Texture* pauseButtonTexture = nullptr; // Thêm texture cho nút Pause
 int cameraY = 0;
 
 bool init() {
@@ -24,7 +26,7 @@ bool init() {
     }
 
     // Tải background
-    SDL_Surface* bgSurface = IMG_Load("background2.jpg");
+    SDL_Surface* bgSurface = IMG_Load("background5.jpg");
     if (!bgSurface) {
         std::cout << "Failed to load background image! Error: " << IMG_GetError() << std::endl;
         return false;
@@ -59,6 +61,12 @@ bool init() {
         std::cout << "Failed to load wall image! Error: " << IMG_GetError() << std::endl;
         return false;
     }
+    // tải nút pause
+    SDL_Surface* pauseSurface = IMG_Load("pause.jpg");
+    if (!pauseSurface) {
+        std::cout << "Failed to load pause button! Error: " << IMG_GetError() << std::endl;
+        return false;
+    }
     // Tải vật cản
     SDL_Surface* gearSurface = IMG_Load("obstacle.png"); 
     if (!gearSurface) {
@@ -71,15 +79,34 @@ bool init() {
         std::cout << "Failed to create gear texture! Error: " << SDL_GetError() << std::endl;
         return false;
     }
+    // tải vật cản co giãn
+    SDL_Texture* commonObstacleTexture = IMG_LoadTexture(renderer, "obstacle.png");
+    if (!commonObstacleTexture) {
+        std::cout << "Failed to load common obstacle image! Error: " << IMG_GetError() << std::endl;
+        return false;
+    }
 
+    // Gán texture chung cho 4 vật thể mới
+    for (int i = 0; i < 4; i++) {
+        customObstacleTextures[i] = commonObstacleTexture;
+    }
     return true; // **Chỉ return khi mọi thứ đã được tải xong**
 }
 
 
 void renderBackground() {
-    SDL_Rect bgRect = { 0, -cameraY, SCREEN_WIDTH, LEVEL_HEIGHT };
-    SDL_RenderCopy(renderer, backgroundTexture, NULL, &bgRect);
+    int img_width, img_height;
+    SDL_QueryTexture(backgroundTexture, NULL, NULL, &img_width, &img_height);
+
+    for (int x = 0; x < SCREEN_WIDTH; x += img_width) {
+        for (int y = -cameraY; y < LEVEL_HEIGHT; y += img_height) {
+            SDL_Rect bgRect = { x, y, img_width, img_height };
+            SDL_RenderCopy(renderer, backgroundTexture, NULL, &bgRect);
+        }
+    }
 }
+
+
 
 
 void renderTileMap() {
@@ -119,7 +146,7 @@ void gameLoop() {
     bool running = true;
     SDL_Event event;
     setupLevel();
-    while(running) {
+    while (running) {
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) running = false;
             handleInput(event);
@@ -139,18 +166,10 @@ void gameLoop() {
 
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
-
-        // **Đảm bảo vẽ background trước**
         renderBackground();
-        // Vẽ tường
         renderTileMap();
-        // **Vẽ nhân vật tiếp theo để không bị che**
         renderPlayer();
-
-        // **Sau đó mới vẽ vật cản**
         renderObstacles();
-
-
         SDL_RenderPresent(renderer);
         SDL_Delay(16);
     }

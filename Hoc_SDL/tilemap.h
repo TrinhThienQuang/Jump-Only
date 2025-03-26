@@ -5,7 +5,7 @@
 #include "game.h"
 
 const int TILE_SIZE = 50; // Kích thước mỗi ô vuông
-const int MAP_WIDTH = 16; // Số ô theo chiều ngang
+const int MAP_WIDTH = 28; // Số ô theo chiều ngang
 const int MAP_HEIGHT = 50; // Số ô theo chiều dọc (LEVEL_HEIGHT / TILE_SIZE)
 
 // Khai báo mảng tileMap
