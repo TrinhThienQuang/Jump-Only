@@ -1,6 +1,7 @@
 ﻿#include "game.h"
 #include "tilemap.h"
 #include "obstacle.h"
+#include "pause.h"
 
 SDL_Window* window = nullptr;
 SDL_Renderer* renderer = nullptr;
@@ -142,26 +143,34 @@ void renderTileMap() {
 }
 
 
+
 void gameLoop() {
     bool running = true;
     SDL_Event event;
     setupLevel();
+
     while (running) {
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) running = false;
-            handleInput(event);
+            handlePauseEvent(event); // Xử lý ESC để pause
+
+            if (!isPaused) {
+                handleInput(event);
+            }
         }
 
-        updatePlayer();
-        updateMovingObstacles();
+        if (!isPaused) {
+            updatePlayer();
+            updateMovingObstacles();
 
-        if (checkCollision()) {
-            std::cout << "Game Over!" << std::endl;
-            running = false;
-        }
-        if (player.y <= 0) {
-            std::cout << "You win!" << std::endl;
-            running = false;
+            if (checkCollision()) {
+                std::cout << "Game Over!" << std::endl;
+                running = false;
+            }
+            if (player.y <= 0) {
+                std::cout << "You win!" << std::endl;
+                running = false;
+            }
         }
 
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
@@ -170,8 +179,17 @@ void gameLoop() {
         renderTileMap();
         renderPlayer();
         renderObstacles();
+
+        if (isPaused) {
+            renderPauseScreen(); // Hiển thị màn hình Pause
+        }
+
         SDL_RenderPresent(renderer);
         SDL_Delay(16);
     }
-
 }
+
+
+
+
+
