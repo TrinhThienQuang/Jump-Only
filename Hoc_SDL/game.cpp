@@ -63,7 +63,7 @@ bool init() {
         return false;
     }
     // tải nút pause
-    SDL_Surface* pauseSurface = IMG_Load("pause.jpg");
+    SDL_Surface* pauseSurface = IMG_Load("pause1.png");
     if (!pauseSurface) {
         std::cout << "Failed to load pause button! Error: " << IMG_GetError() << std::endl;
         return false;
@@ -143,6 +143,29 @@ void renderTileMap() {
 }
 
 
+void loadGame() {
+    // Đặt nhân vật về vị trí ở đáy màn hình
+    player.x = SCREEN_WIDTH / 2 - PLAYER_WIDTH / 2; // Ở giữa theo chiều ngang
+    player.y = LEVEL_HEIGHT; // Chạm đáy của level
+
+    player.dx = 0;
+    player.dy = 0;
+
+    // Đặt camera để hiển thị đúng phần đáy màn hình
+    cameraY = LEVEL_HEIGHT - SCREEN_HEIGHT;
+    if (cameraY < 0) cameraY = 0; // Đảm bảo không vượt quá giới hạn
+}
+
+
+
+void restartGame() {
+    // Reset lại trạng thái game
+    loadGame(); // Hàm này có thể là hàm khởi tạo lại game của bạn
+    isPaused = false; // Bỏ pause
+}
+
+
+
 
 void gameLoop() {
     bool running = true;
@@ -188,8 +211,3 @@ void gameLoop() {
         SDL_Delay(16);
     }
 }
-
-
-
-
-

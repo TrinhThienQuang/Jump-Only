@@ -1,6 +1,7 @@
 ﻿#include "pause.h"
 #include <SDL_image.h>
 #include "game.h"
+#include "menu.h"
 
 bool isPaused = false;
 SDL_Texture* pauseScreenTexture = nullptr;
@@ -11,6 +12,32 @@ void handlePauseEvent(SDL_Event& event) {
         isPaused = !isPaused;
         if (isPaused) {
             captureCurrentFrame(); // Chụp khung hình hiện tại
+        }
+    }
+    if (isPaused && event.type == SDL_MOUSEBUTTONDOWN) {
+        int mouseX, mouseY;
+        SDL_GetMouseState(&mouseX, &mouseY);
+
+        SDL_Rect playButton = { 610, 270, 180, 70 };
+        SDL_Rect restartButton = { 610, 370, 180, 40 };
+        SDL_Rect optionsButton = { 610, 400, 180, 70 }; 
+        SDL_Rect quitButton = { 610, 500, 180, 40 };
+
+        if (mouseX >= playButton.x && mouseX <= playButton.x + playButton.w &&
+            mouseY >= playButton.y && mouseY <= playButton.y + playButton.h) {
+            isPaused = false; // Tiếp tục chơi
+        }
+        else if (mouseX >= restartButton.x && mouseX <= restartButton.x + restartButton.w &&
+            mouseY >= restartButton.y && mouseY <= restartButton.y + restartButton.h) {
+            restartGame(); // Gọi hàm restart game
+        }
+        else if (mouseX >= optionsButton.x && mouseX <= optionsButton.x + optionsButton.w &&
+            mouseY >= optionsButton.y && mouseY <= optionsButton.y + optionsButton.h) {
+            // Xử lý mở menu tùy chọn nếu cần
+        }
+        else if (mouseX >= quitButton.x && mouseX <= quitButton.x + quitButton.w &&
+            mouseY >= quitButton.y && mouseY <= quitButton.y + quitButton.h) {
+            showMenu(); // Vào lại menu
         }
     }
 }

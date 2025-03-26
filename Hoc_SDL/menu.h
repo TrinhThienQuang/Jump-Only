@@ -7,5 +7,7 @@
 extern bool gameRunning;
 
 void showMenu();
+void showLevelMenu();
+void showOptionsMenu();
 
 #endif
