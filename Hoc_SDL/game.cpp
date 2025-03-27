@@ -62,12 +62,6 @@ bool init() {
         std::cout << "Failed to load wall image! Error: " << IMG_GetError() << std::endl;
         return false;
     }
-    // tải nút pause
-    SDL_Surface* pauseSurface = IMG_Load("pause1.png");
-    if (!pauseSurface) {
-        std::cout << "Failed to load pause button! Error: " << IMG_GetError() << std::endl;
-        return false;
-    }
     // Tải vật cản
     SDL_Surface* gearSurface = IMG_Load("obstacle.png"); 
     if (!gearSurface) {
@@ -81,7 +75,7 @@ bool init() {
         return false;
     }
     // tải vật cản co giãn
-    SDL_Texture* commonObstacleTexture = IMG_LoadTexture(renderer, "obstacle.png");
+    SDL_Texture* commonObstacleTexture = IMG_LoadTexture(renderer, "gear1.png");
     if (!commonObstacleTexture) {
         std::cout << "Failed to load common obstacle image! Error: " << IMG_GetError() << std::endl;
         return false;
@@ -204,8 +198,15 @@ void gameLoop() {
         renderObstacles();
 
         if (isPaused) {
-            renderPauseScreen(); // Hiển thị màn hình Pause
+            if (isOptionsScreen) {
+                renderOptionsScreen();
+            }
+            else {
+                renderPauseScreen();
+            }
+            SDL_RenderPresent(renderer);  // Cập nhật màn hình
         }
+
 
         SDL_RenderPresent(renderer);
         SDL_Delay(16);

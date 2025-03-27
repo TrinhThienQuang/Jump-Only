@@ -4,9 +4,11 @@
 #include <SDL.h>
 
 extern bool isPaused;
+extern bool isOptionsScreen;
 
 void handlePauseEvent(SDL_Event& event);
 void renderPauseScreen();
 void captureCurrentFrame();
+void renderOptionsScreen();
 
 #endif

@@ -4,7 +4,9 @@
 #include "menu.h"
 
 bool isPaused = false;
-SDL_Texture* pauseScreenTexture = nullptr;
+bool isOptionsScreen = false;  // Biến xác định có đang ở màn hình options không
+
+
 SDL_Texture* previousFrameTexture = nullptr;
 
 void handlePauseEvent(SDL_Event& event) {
@@ -18,10 +20,10 @@ void handlePauseEvent(SDL_Event& event) {
         int mouseX, mouseY;
         SDL_GetMouseState(&mouseX, &mouseY);
 
-        SDL_Rect playButton = { 610, 270, 180, 70 };
-        SDL_Rect restartButton = { 610, 370, 180, 40 };
-        SDL_Rect optionsButton = { 610, 400, 180, 70 }; 
-        SDL_Rect quitButton = { 610, 500, 180, 40 };
+        SDL_Rect playButton = { 530, 350, 150, 100 };
+        SDL_Rect restartButton = { 720, 350, 150, 100 };
+        SDL_Rect optionsButton = { 530, 490, 150, 100 }; 
+        SDL_Rect quitButton = { 720, 490, 100, 100 };
 
         if (mouseX >= playButton.x && mouseX <= playButton.x + playButton.w &&
             mouseY >= playButton.y && mouseY <= playButton.y + playButton.h) {
@@ -33,8 +35,38 @@ void handlePauseEvent(SDL_Event& event) {
         }
         else if (mouseX >= optionsButton.x && mouseX <= optionsButton.x + optionsButton.w &&
             mouseY >= optionsButton.y && mouseY <= optionsButton.y + optionsButton.h) {
-            // Xử lý mở menu tùy chọn nếu cần
+            isOptionsScreen = true;  // Chuyển sang màn hình options
         }
+        else if (isOptionsScreen) {
+            // Tọa độ các nút trong Options menu
+            SDL_Rect musicButton = { 610, 315, 160, 65 };  // Nút Music
+            SDL_Rect soundButton = { 610, 405, 160, 65 };  // Nút Sound
+            SDL_Rect backButton = { 610, 495, 160, 65 };  // Nút Back
+            SDL_Rect backButton1 = { 815, 250, 30, 30 };  // Nút Back
+            std::cout << mouseX << ' ' << mouseY << std::endl;
+            // Nhấn vào nút Music (tạm thời chưa xử lý logic)
+            if (mouseX >= musicButton.x && mouseX <= musicButton.x + musicButton.w &&
+                mouseY >= musicButton.y && mouseY <= musicButton.y + musicButton.h) {
+                // TODO: Tắt / bật nhạc nền
+            }
+            // Nhấn vào nút Sound (tạm thời chưa xử lý logic)
+            else if (mouseX >= soundButton.x && mouseX <= soundButton.x + soundButton.w &&
+                mouseY >= soundButton.y && mouseY <= soundButton.y + soundButton.h) {
+                // TODO: Tắt / bật âm thanh
+            }
+            // Nhấn vào nút Back để quay lại Pause
+            else if (mouseX >= backButton.x && mouseX <= backButton.x + backButton.w &&
+                mouseY >= backButton.y && mouseY <= backButton.y + backButton.h) {
+                isOptionsScreen = false;  // Quay lại màn hình Pause
+                isPaused = true;           // Đảm bảo màn hình Pause vẫn hiển thị
+            }
+            else if (mouseX >= backButton1.x && mouseX <= backButton1.x + backButton1.w &&
+                mouseY >= backButton1.y && mouseY <= backButton1.y + backButton1.h) {
+                isOptionsScreen = false;  // Quay lại màn hình Pause
+                isPaused = true;           // Đảm bảo màn hình Pause vẫn hiển thị
+            }
+        }
+
         else if (mouseX >= quitButton.x && mouseX <= quitButton.x + quitButton.w &&
             mouseY >= quitButton.y && mouseY <= quitButton.y + quitButton.h) {
             showMenu(); // Vào lại menu
@@ -61,38 +93,49 @@ void captureCurrentFrame() {
 
 
 void renderPauseScreen() {
-    if (isPaused) {
-        // Hiển thị texture khung hình trước
+    if (isPaused && !isOptionsScreen) {  // Chỉ vẽ màn hình pause nếu không ở options
         if (previousFrameTexture) {
             SDL_RenderCopy(renderer, previousFrameTexture, NULL, NULL);
         }
 
-        // Tạo lớp phủ làm tối màn hình
-        SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND); // Bật chế độ blend
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 100); // Màu đen với độ trong suốt
+        SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 100);
         SDL_Rect overlay = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
         SDL_RenderFillRect(renderer, &overlay);
 
-        // Hiển thị ảnh Pause ở giữa màn hình
-        SDL_Surface* pauseSurface = IMG_Load("pause1.png");
+        SDL_Surface* pauseSurface = IMG_Load("pause3.png");
         if (pauseSurface) {
             SDL_Texture* pauseTexture = SDL_CreateTextureFromSurface(renderer, pauseSurface);
-
-            int pauseW = 360; // Chiều rộng ảnh Pause
-            int pauseH = 460; // Chiều cao ảnh Pause
-
-            SDL_Rect pauseRect = {
-                (SCREEN_WIDTH - pauseW) / 2,
-                (SCREEN_HEIGHT - pauseH) / 2,
-                pauseW,
-                pauseH
-            };
-
+            SDL_Rect pauseRect = { (SCREEN_WIDTH - 500) / 2, (SCREEN_HEIGHT - 500) / 2, 500, 500 };
             SDL_RenderCopy(renderer, pauseTexture, NULL, &pauseRect);
             SDL_DestroyTexture(pauseTexture);
             SDL_FreeSurface(pauseSurface);
         }
     }
 }
+
+
+void renderOptionsScreen() {
+    if (isOptionsScreen) {
+        if (previousFrameTexture) {
+            SDL_RenderCopy(renderer, previousFrameTexture, NULL, NULL);
+        }
+
+        SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 100);
+        SDL_Rect overlay = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
+        SDL_RenderFillRect(renderer, &overlay);
+
+        SDL_Surface* optionsSurface = IMG_Load("option4.png");
+        if (optionsSurface) {
+            SDL_Texture* optionsTexture = SDL_CreateTextureFromSurface(renderer, optionsSurface);
+            SDL_Rect optionsRect = { (SCREEN_WIDTH - 500) / 2, (SCREEN_HEIGHT - 500) / 2, 500, 500 };
+            SDL_RenderCopy(renderer, optionsTexture, NULL, &optionsRect);
+            SDL_DestroyTexture(optionsTexture);
+            SDL_FreeSurface(optionsSurface);
+        }
+    }
+}
+
 
 
