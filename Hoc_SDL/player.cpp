@@ -1,5 +1,5 @@
 ﻿#include "player.h"
-#include "tilemap.h"  // Thêm tilemap để kiểm tra va chạm
+#include "level.h"
 
 Player player;
 SDL_Texture* playerTexture = nullptr;
@@ -10,7 +10,7 @@ bool checkTileCollision(int x, int y) {
     int tileY = y / TILE_SIZE;
 
     // Kiểm tra nếu ngoài phạm vi map hoặc chạm vào tile 1 (tường)
-    if (tileX < 0 || tileX >= MAP_WIDTH || tileY < 0 || tileY >= MAP_HEIGHT || tileMap[tileY][tileX] == 1) {
+    if (tileX < 0 || tileX >= MAP_WIDTH || tileY < 0 || tileY >= MAP_HEIGHT || tileMap1[tileY][tileX] == 1) {
         return true;
     }
     return false;
@@ -44,8 +44,9 @@ void updatePlayer() {
     if (player.y + PLAYER_HEIGHT >= bottomScreenY - 1) {
         player.y = bottomScreenY - PLAYER_HEIGHT;
         player.dy = JUMP_FORCE;
-        
+
     }
+
 
     // Cập nhật camera theo nhân vật
     if (player.y < cameraY + SCREEN_HEIGHT / 2) {

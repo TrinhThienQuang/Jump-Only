@@ -69,6 +69,7 @@ void handlePauseEvent(SDL_Event& event) {
 
         else if (mouseX >= quitButton.x && mouseX <= quitButton.x + quitButton.w &&
             mouseY >= quitButton.y && mouseY <= quitButton.y + quitButton.h) {
+            restartGame();
             showMenu(); // Vào lại menu
         }
     }

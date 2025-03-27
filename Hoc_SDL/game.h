@@ -5,7 +5,18 @@
 #include <SDL_image.h>
 #include <iostream>
 #include "player.h"
-#include "obstacle.h"
+#include "level.h"
+
+enum GameState {
+    MENU,
+    LEVEL_1,
+    LEVEL_2,
+    LEVEL_3,
+};
+
+// Biến toàn cục để theo dõi trạng thái game
+extern GameState gameState;
+
 
 const int SCREEN_WIDTH = 1400;
 const int SCREEN_HEIGHT = 800;
@@ -16,6 +27,7 @@ extern SDL_Window* window;
 extern SDL_Renderer* renderer;
 extern SDL_Texture* backgroundTexture;
 extern SDL_Texture* spikeTexture;
+extern SDL_Texture* wallTexture;
 
 extern int cameraY;
 

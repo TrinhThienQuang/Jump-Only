@@ -57,7 +57,12 @@ bool isOptionsButton(int x, int y) {
 }
 
 
-
+void resetWindow() {
+    // 🔹 Đặt lại kích thước cửa sổ về 1400x800 khi vào game
+    SDL_SetWindowSize(window, SCREEN_WIDTH, SCREEN_HEIGHT);
+    SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
+    SDL_RenderPresent(renderer); // Cập nhật cửa sổ
+}
 
 // 🔹 Hiển thị menu trong cửa sổ chung
 void showMenu() {
@@ -77,7 +82,7 @@ void showMenu() {
             if (e.type == SDL_QUIT) exit(0);
             if (e.type == SDL_MOUSEBUTTONDOWN) {
                 if (isInsideButton(e.button.x, e.button.y)) { // Nhấn vào Play
-                    gameRunning = true;
+                    showLevelMenu();
                     inMenu = false; // Thoát menu để vào game
                 }
                 if (isQuitButton(e.button.x, e.button.y)) {
@@ -107,52 +112,50 @@ void showMenu() {
     }
 
     // 🔹 Đặt lại kích thước cửa sổ về 1400x800 khi vào game
-    SDL_SetWindowSize(window, SCREEN_WIDTH, SCREEN_HEIGHT);
-    SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
-    SDL_RenderPresent(renderer); // Cập nhật cửa sổ
+    resetWindow();
 
     // 🔹 Giải phóng tài nguyên menu
     SDL_DestroyTexture(menuBackground);
 }
+
 void showLevelMenu() {
-    // 🔹 Đặt cửa sổ menu level thành 800x800
     SDL_SetWindowSize(window, 800, 800);
     SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
-
-    loadLevelMenuAssets(); // Tải ảnh nền menu level
+    loadLevelMenuAssets();
 
     bool inLevelMenu = true;
     SDL_Event e;
 
-    SDL_Rect easyButton = { 290, 260, 220, 80 };
-    SDL_Rect normalButton = { 290, 370, 220, 80 };
-    SDL_Rect hardButton = { 290, 480, 220, 80 };
+    SDL_Rect easyButton = { 240, 270, 340, 100 };
+    SDL_Rect normalButton = { 240, 410, 340, 100 };
+    SDL_Rect hardButton = { 240, 550, 340, 100 };
 
     while (inLevelMenu) {
         while (SDL_PollEvent(&e)) {
             if (e.type == SDL_QUIT) exit(0);
             if (e.type == SDL_MOUSEBUTTONDOWN) {
-                int x = e.button.x;
-                int y = e.button.y;
-
+                int x = e.button.x, y = e.button.y;
+                
                 if (x >= easyButton.x && x <= easyButton.x + easyButton.w &&
                     y >= easyButton.y && y <= easyButton.y + easyButton.h) {
                     std::cout << "Easy Mode Selected! Starting game...\n";
-                    gameRunning = true; // Vào game
+                    resetWindow();
+                    gameState = LEVEL_1;
                     inLevelMenu = false;
-                }
 
+                }
                 if (x >= normalButton.x && x <= normalButton.x + normalButton.w &&
                     y >= normalButton.y && y <= normalButton.y + normalButton.h) {
                     std::cout << "Normal Mode Selected! Starting game...\n";
-                    gameRunning = true;
+                    gameState = LEVEL_2;
+                    resetWindow();
                     inLevelMenu = false;
                 }
-
                 if (x >= hardButton.x && x <= hardButton.x + hardButton.w &&
                     y >= hardButton.y && y <= hardButton.y + hardButton.h) {
                     std::cout << "Hard Mode Selected! Starting game...\n";
-                    gameRunning = true;
+                    gameState = LEVEL_3;
+                    resetWindow();
                     inLevelMenu = false;
                 }
             }
@@ -160,22 +163,16 @@ void showLevelMenu() {
 
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
-
-        if (levelMenuBackground) {
-            SDL_RenderCopy(renderer, levelMenuBackground, NULL, NULL);
-        }
-
+        if (levelMenuBackground) SDL_RenderCopy(renderer, levelMenuBackground, NULL, NULL);
         SDL_RenderPresent(renderer);
 
-        // Nếu vào game, thoát menu
-        if (gameRunning) break;
+        if (!inLevelMenu) break; // Nếu chọn màn chơi, thoát menu
     }
 
-    // 🔹 Đặt lại kích thước cửa sổ về 1400x800 khi vào game
-    SDL_SetWindowSize(window, SCREEN_WIDTH, SCREEN_HEIGHT);
-    SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
-    SDL_RenderPresent(renderer); // Cập nhật cửa sổ
+    // Khi chọn xong level, thoát menu và vào game
+    gameRunning = true;
 }
+
 
 void showOptionsMenu() {
     // 🔹 Đặt cửa sổ menu settings thành 800x800
@@ -216,6 +213,5 @@ void showOptionsMenu() {
     SDL_DestroyTexture(optionsMenuBackground);
     optionsMenuBackground = nullptr;
 }
-
 
 

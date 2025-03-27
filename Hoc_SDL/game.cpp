@@ -1,16 +1,19 @@
 ﻿#include "game.h"
-#include "tilemap.h"
-#include "obstacle.h"
+#include "level.h"
 #include "pause.h"
+#include "menu.h"
 
-SDL_Window* window = nullptr;
+SDL_Window * window = nullptr;
 SDL_Renderer* renderer = nullptr;
 SDL_Texture* backgroundTexture = nullptr;
 SDL_Texture* spikeTexture = nullptr; // Texture cho gai nhọn
 SDL_Texture* wallTexture = nullptr;
 SDL_Texture* commonObstacleTexture = nullptr;
 SDL_Texture* pauseButtonTexture = nullptr; // Thêm texture cho nút Pause
+SDL_Texture* gearTexture = nullptr;
 int cameraY = 0;
+// Khởi tạo trạng thái game ban đầu là MENU
+GameState gameState = MENU;
 
 bool init() {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -63,7 +66,7 @@ bool init() {
         return false;
     }
     // Tải vật cản
-    SDL_Surface* gearSurface = IMG_Load("obstacle.png"); 
+    SDL_Surface* gearSurface = IMG_Load("obstacle.png");
     if (!gearSurface) {
         std::cout << "Failed to load gear image! Error: " << IMG_GetError() << std::endl;
         return false;
@@ -102,13 +105,11 @@ void renderBackground() {
 }
 
 
-
-
-void renderTileMap() {
+void rendertileMap() {
     for (int y = 0; y < MAP_HEIGHT; y++) {
         for (int x = 0; x < MAP_WIDTH; x++) {
             SDL_Rect tileRect = { x * TILE_SIZE, y * TILE_SIZE - cameraY, TILE_SIZE, TILE_SIZE };
-            if (tileMap[y][x] == 1 && wallTexture != nullptr) {
+            if (tileMap1[y][x] == 1 && wallTexture != nullptr) {
                 SDL_RenderCopy(renderer, wallTexture, NULL, &tileRect);
             }
         }
@@ -119,15 +120,15 @@ void renderTileMap() {
             SDL_Rect tileRect = { x * TILE_SIZE, y * TILE_SIZE - cameraY, TILE_SIZE, TILE_SIZE };
 
             // Vẽ gai nhọn (tile 2)
-            if (tileMap[y][x] == 2 && spikeTexture != nullptr) {
+            if (tileMap1[y][x] == 2 && spikeTexture != nullptr) {
                 double angle = 0.0; // Mặc định hướng lên
-                if (y > 0 && tileMap[y - 1][x] == 1) {
+                if (y > 0 && tileMap1[y - 1][x] == 1) {
                     angle = 180.0; // Gai nhọn hướng xuống
                 }
-                else if (x > 0 && tileMap[y][x - 1] == 1) {
+                else if (x > 0 && tileMap1[y][x - 1] == 1) {
                     angle = 90.0; // Gai nhọn hướng trái
                 }
-                else if (x < MAP_WIDTH - 1 && tileMap[y][x + 1] == 1) {
+                else if (x < MAP_WIDTH - 1 && tileMap1[y][x + 1] == 1) {
                     angle = 270.0; // Gai nhọn hướng phải
                 }
                 SDL_RenderCopyEx(renderer, spikeTexture, NULL, &tileRect, angle, NULL, SDL_FLIP_NONE);
@@ -139,8 +140,8 @@ void renderTileMap() {
 
 void loadGame() {
     // Đặt nhân vật về vị trí ở đáy màn hình
-    player.x = SCREEN_WIDTH / 2 - PLAYER_WIDTH / 2; // Ở giữa theo chiều ngang
-    player.y = LEVEL_HEIGHT; // Chạm đáy của level
+    player.x = SCREEN_WIDTH / 2 - PLAYER_WIDTH / 2;  // Giữ nguyên vị trí giữa màn hình
+    player.y = LEVEL_HEIGHT - PLAYER_HEIGHT - 50;   // Đặt cách đáy một khoảng an toàn
 
     player.dx = 0;
     player.dy = 0;
@@ -164,7 +165,15 @@ void restartGame() {
 void gameLoop() {
     bool running = true;
     SDL_Event event;
-    setupLevel();
+    if (gameState == LEVEL_1) {
+        setupLevel1();
+    }
+    else if (gameState == LEVEL_2) {
+        setupLevel2();
+    }
+    else {
+        setupLevel3();
+    }
 
     while (running) {
         while (SDL_PollEvent(&event)) {
@@ -178,11 +187,33 @@ void gameLoop() {
 
         if (!isPaused) {
             updatePlayer();
-            updateMovingObstacles();
+            if (gameState == LEVEL_1) {
+                updateMovingLevel1();
+            }
+            else if (gameState == LEVEL_2) {
+                updateMovingLevel2();
+            }
+            else {
+                updateMovingLevel3();
+            }
 
-            if (checkCollision()) {
-                std::cout << "Game Over!" << std::endl;
-                running = false;
+            if (gameState == LEVEL_1) {
+                if (checkCollisionLevel1()) {
+                    std::cout << "Game Over!" << std::endl;
+                    running = false;
+                }
+            }
+            else if (gameState == LEVEL_2) {
+                if (checkCollisionLevel2()) {
+                    std::cout << "Game Over!" << std::endl;
+                    running = false;
+                }
+            }
+            else {
+                if (checkCollisionLevel3()) {
+                    std::cout << "Game Over!" << std::endl;
+                    running = false;
+                }
             }
             if (player.y <= 0) {
                 std::cout << "You win!" << std::endl;
@@ -193,9 +224,17 @@ void gameLoop() {
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
         renderBackground();
-        renderTileMap();
+        rendertileMap();
         renderPlayer();
-        renderObstacles();
+        if (gameState == LEVEL_1) {
+            renderLevel1();
+        }
+        else if (gameState == LEVEL_2) {
+            renderLevel2();
+        }
+        else {
+            renderLevel3();
+        }
 
         if (isPaused) {
             if (isOptionsScreen) {
