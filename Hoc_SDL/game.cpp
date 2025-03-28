@@ -2,6 +2,7 @@
 #include "level.h"
 #include "pause.h"
 #include "menu.h"
+#include "player.h"
 
 SDL_Window * window = nullptr;
 SDL_Renderer* renderer = nullptr;
@@ -12,6 +13,7 @@ SDL_Texture* commonObstacleTexture = nullptr;
 SDL_Texture* pauseButtonTexture = nullptr; // Thêm texture cho nút Pause
 SDL_Texture* gearTexture = nullptr;
 int cameraY = 0;
+int lives = 1;
 // Khởi tạo trạng thái game ban đầu là MENU
 GameState gameState = MENU;
 
@@ -178,6 +180,19 @@ void restartGame() {
 
 
 
+void gameOver() {
+    if (lives > 0) {
+        lives--;
+        restartGame();
+    }
+    else {
+        isGameOver = true;
+    }
+}
+
+
+
+
 
 void gameLoop() {
     bool running = true;
@@ -237,7 +252,6 @@ void gameLoop() {
                 running = false;
             }
         }
-
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
         renderBackground();
@@ -260,7 +274,9 @@ void gameLoop() {
         else {
             renderLevel3();
         }
-
+        if (isGameOver) {
+            renderGameOverScreen();
+        }
         if (isPaused) {
             if (isOptionsScreen) {
                 renderOptionsScreen();
@@ -270,7 +286,6 @@ void gameLoop() {
             }
             SDL_RenderPresent(renderer);  // Cập nhật màn hình
         }
-
 
         SDL_RenderPresent(renderer);
         SDL_Delay(16);

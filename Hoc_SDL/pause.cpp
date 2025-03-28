@@ -5,6 +5,8 @@
 
 bool isPaused = false;
 bool isOptionsScreen = false;  // Biến xác định có đang ở màn hình options không
+SDL_Texture* previousFrameTextureGameOver = nullptr; // Lưu khung hình trước khi game over
+bool isGameOver = false;
 
 
 SDL_Texture* previousFrameTexture = nullptr;
@@ -73,6 +75,25 @@ void handlePauseEvent(SDL_Event& event) {
             showMenu(); // Vào lại menu
         }
     }
+    if (isGameOver && event.type == SDL_MOUSEBUTTONDOWN) {
+        int mouseX, mouseY;
+        SDL_GetMouseState(&mouseX, &mouseY);
+        std::cout << mouseX << ' ' << mouseY << std::endl;
+        SDL_Rect retryButton = { 590, 330, 230, 120 }; // Nút chơi lại
+        SDL_Rect exitButton = { 590, 480, 230, 120 };    // Nút về menu
+
+        if (mouseX >= retryButton.x && mouseX <= retryButton.x + retryButton.w &&
+            mouseY >= retryButton.y && mouseY <= retryButton.y + retryButton.h) {
+            isGameOver = false;
+            restartGame();
+        }
+        else if (mouseX >= exitButton.x && mouseX <= exitButton.x + exitButton.w &&
+            mouseY >= exitButton.y && mouseY <= exitButton.y + exitButton.h) {
+            isGameOver = false;
+            showMenu();
+        }
+    }
+
 }
 
 
@@ -91,6 +112,27 @@ void captureCurrentFrame() {
 
     SDL_FreeSurface(surface); // Giải phóng surface sau khi sử dụng
 }
+
+
+void renderGameOverScreen() {
+    if (isGameOver) {
+        SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 150);
+        SDL_Rect overlay = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
+        SDL_RenderFillRect(renderer, &overlay);
+
+        SDL_Surface* gameOverSurface = IMG_Load("gameover.png");
+        if (gameOverSurface) {
+            SDL_Texture* gameOverTexture = SDL_CreateTextureFromSurface(renderer, gameOverSurface);
+            SDL_Rect gameOverRect = { (SCREEN_WIDTH - 500) / 2, (SCREEN_HEIGHT - 500) / 2, 500, 500 };
+            SDL_RenderCopy(renderer, gameOverTexture, NULL, &gameOverRect);
+            SDL_DestroyTexture(gameOverTexture);
+            SDL_FreeSurface(gameOverSurface);
+        }
+    }
+}
+
+
 
 
 void renderPauseScreen() {
