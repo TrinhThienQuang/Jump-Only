@@ -105,11 +105,27 @@ void renderBackground() {
 }
 
 
-void rendertileMap() {
+void rendertileMap(int level) {
+    const int (*tileMap)[MAP_WIDTH]; // Con trỏ đến mảng tileMap phù hợp
+
+    // Chọn tileMap theo level
+    if (level == LEVEL_1) {
+        tileMap = tileMap1;
+    }
+    else if (level == LEVEL_2) {
+        tileMap = tileMap2;
+    }
+    else if (level == LEVEL_3) {
+        tileMap = tileMap3;
+    }
+    else {
+        return; // Level không hợp lệ
+    }
+
     for (int y = 0; y < MAP_HEIGHT; y++) {
         for (int x = 0; x < MAP_WIDTH; x++) {
             SDL_Rect tileRect = { x * TILE_SIZE, y * TILE_SIZE - cameraY, TILE_SIZE, TILE_SIZE };
-            if (tileMap1[y][x] == 1 && wallTexture != nullptr) {
+            if (tileMap[y][x] == 1 && wallTexture != nullptr) {
                 SDL_RenderCopy(renderer, wallTexture, NULL, &tileRect);
             }
         }
@@ -120,15 +136,15 @@ void rendertileMap() {
             SDL_Rect tileRect = { x * TILE_SIZE, y * TILE_SIZE - cameraY, TILE_SIZE, TILE_SIZE };
 
             // Vẽ gai nhọn (tile 2)
-            if (tileMap1[y][x] == 2 && spikeTexture != nullptr) {
+            if (tileMap[y][x] == 2 && spikeTexture != nullptr) {
                 double angle = 0.0; // Mặc định hướng lên
-                if (y > 0 && tileMap1[y - 1][x] == 1) {
+                if (y > 0 && tileMap[y - 1][x] == 1) {
                     angle = 180.0; // Gai nhọn hướng xuống
                 }
-                else if (x > 0 && tileMap1[y][x - 1] == 1) {
+                else if (x > 0 && tileMap[y][x - 1] == 1) {
                     angle = 90.0; // Gai nhọn hướng trái
                 }
-                else if (x < MAP_WIDTH - 1 && tileMap1[y][x + 1] == 1) {
+                else if (x < MAP_WIDTH - 1 && tileMap[y][x + 1] == 1) {
                     angle = 270.0; // Gai nhọn hướng phải
                 }
                 SDL_RenderCopyEx(renderer, spikeTexture, NULL, &tileRect, angle, NULL, SDL_FLIP_NONE);
@@ -136,6 +152,7 @@ void rendertileMap() {
         }
     }
 }
+
 
 
 void loadGame() {
@@ -224,7 +241,15 @@ void gameLoop() {
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
         renderBackground();
-        rendertileMap();
+        if (gameState == LEVEL_1) {
+            rendertileMap(1);
+        }
+        else if (gameState == LEVEL_2) {
+            rendertileMap(2);
+        }
+        else {
+            rendertileMap(3);
+        }
         renderPlayer();
         if (gameState == LEVEL_1) {
             renderLevel1();

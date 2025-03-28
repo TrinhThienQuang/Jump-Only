@@ -80,7 +80,7 @@ bool checkCollisionLevel3() {
         int tileX = corners[i][0] / TILE_SIZE;
         int tileY = corners[i][1] / TILE_SIZE;
 
-        if (tileX >= 0 && tileX < MAP_WIDTH && tileY >= 0 && tileY < MAP_HEIGHT && tileMap1[tileY][tileX] == 2) {
+        if (tileX >= 0 && tileX < MAP_WIDTH && tileY >= 0 && tileY < MAP_HEIGHT && tileMap3[tileY][tileX] == 2) {
             return true; // Va chạm với tile gai nhọn
         }
     }

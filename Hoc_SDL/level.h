@@ -14,6 +14,7 @@ const int MAP_HEIGHT = 50; // Số ô theo chiều dọc (LEVEL_HEIGHT / TILE_SI
 // Khai báo mảng tileMap1
 extern const int tileMap1[MAP_HEIGHT][MAP_WIDTH];
 extern const int tileMap2[MAP_HEIGHT][MAP_WIDTH];
+extern const int tileMap3[MAP_HEIGHT][MAP_WIDTH];
 
 struct Obstacle {
     int x, y;                 // Vị trí
@@ -34,7 +35,7 @@ extern std::vector<float> gearAngle;
 const int OBSTACLE_WIDTH = 150;
 const int OBSTACLE_HEIGHT = 150;
 const int MOVING_OBSTACLE_SPEED = 3;
-const int RESIZE_SPEED = 2;
+const int RESIZE_SPEED = 4;
 const float ROTATION_SPEED = 10.0f; // Tốc độ xoay
 
 void renderLevel1();

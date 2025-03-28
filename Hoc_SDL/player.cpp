@@ -10,7 +10,7 @@ bool checkTileCollision(int x, int y) {
     int tileY = y / TILE_SIZE;
 
     // Kiểm tra nếu ngoài phạm vi map hoặc chạm vào tile 1 (tường)
-    if (tileX < 0 || tileX >= MAP_WIDTH || tileY < 0 || tileY >= MAP_HEIGHT || tileMap1[tileY][tileX] == 1) {
+    if (tileX < 0 || tileX >= MAP_WIDTH || tileY < 0 || tileY >= MAP_HEIGHT) {
         return true;
     }
     return false;

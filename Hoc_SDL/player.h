@@ -26,6 +26,7 @@ const int PLAYER_HEIGHT = 50;
 void renderPlayer();
 void updatePlayer();
 void handleInput(SDL_Event& event);
+void renderTrail();
 
 
 

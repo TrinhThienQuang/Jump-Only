@@ -6,6 +6,7 @@
 #include <iostream>
 #include "player.h"
 #include "level.h"
+#include <vector>
 
 enum GameState {
     MENU,
@@ -14,13 +15,21 @@ enum GameState {
     LEVEL_3,
 };
 
-// Biến toàn cục để theo dõi trạng thái game
 extern GameState gameState;
 
 
 const int SCREEN_WIDTH = 1400;
 const int SCREEN_HEIGHT = 800;
-const int LEVEL_HEIGHT = 4000;
+const int LEVEL_HEIGHT = 6500;
+
+// Cấu trúc lưu vệt gia tốc
+struct Trail {
+    int x, y;
+    Uint8 r, g, b, alpha; // Màu xanh lá nhạt và độ trong suốt
+};
+
+// Danh sách vệt nhân vật
+extern std::vector<Trail> trails;
 
 
 extern SDL_Window* window;
@@ -36,5 +45,6 @@ void renderBackground();
 void gameLoop();
 void restartGame();
 void loadGame();
+
 
 #endif
