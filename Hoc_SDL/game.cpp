@@ -3,6 +3,7 @@
 #include "pause.h"
 #include "menu.h"
 #include "player.h"
+#include "diamond.h"
 
 SDL_Window * window = nullptr;
 SDL_Renderer* renderer = nullptr;
@@ -90,6 +91,16 @@ bool init() {
     for (int i = 0; i < 4; i++) {
         customObstacleTextures[i] = commonObstacleTexture;
     }
+
+    // tải hiệu ứng nổ
+    explosionTexture = IMG_LoadTexture(renderer, "no.png");
+    if (!explosionTexture) {
+        printf("Failed to load explosion texture: %s\n", SDL_GetError());
+    }
+
+    // tải ảnh kim cương
+    
+
     return true; // **Chỉ return khi mọi thứ đã được tải xong**
 }
 
@@ -206,7 +217,6 @@ void gameLoop() {
     else {
         setupLevel3();
     }
-
     while (running) {
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) running = false;
@@ -219,6 +229,8 @@ void gameLoop() {
 
         if (!isPaused) {
             updatePlayer();
+            updateExplosions(); // 🔥 Cập nhật hiệu ứng nổ
+
             if (gameState == LEVEL_1) {
                 updateMovingLevel1();
             }
@@ -265,6 +277,8 @@ void gameLoop() {
             rendertileMap(3);
         }
         renderPlayer();
+        renderExplosions(); // 🔥 Vẽ hiệu ứng nổ
+
         if (gameState == LEVEL_1) {
             renderLevel1();
         }
@@ -291,3 +305,4 @@ void gameLoop() {
         SDL_Delay(16);
     }
 }
+

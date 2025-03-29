@@ -102,7 +102,9 @@ bool checkCollisionLevel1() {
         int minDistance = gearRadius + playerRadius;
 
         if (distanceSquared <= minDistance * minDistance) {
-            gameOver(); // Va chạm với bánh răng
+            addExplosion(player.x, player.y);
+            gameOver();
+
         }
     }
 
@@ -122,7 +124,9 @@ bool checkCollisionLevel1() {
         int minDistance = obstacleRadius + playerRadius;
 
         if (distanceSquared <= minDistance * minDistance) {
-            gameOver(); // Va chạm với vật thể co giãn
+            addExplosion(player.x, player.y);
+            gameOver();
+
         }
     }
 
@@ -144,7 +148,9 @@ bool checkCollisionLevel1() {
         int tileY = corners[i][1] / TILE_SIZE;
 
         if (tileX >= 0 && tileX < MAP_WIDTH && tileY >= 0 && tileY < MAP_HEIGHT && tileMap1[tileY][tileX] == 2) {
-            gameOver(); // Va chạm với tile gai nhọn
+            addExplosion(player.x, player.y);
+            gameOver();
+
         }
     }
 

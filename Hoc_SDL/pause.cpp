@@ -45,7 +45,6 @@ void handlePauseEvent(SDL_Event& event) {
             SDL_Rect soundButton = { 610, 405, 160, 65 };  // Nút Sound
             SDL_Rect backButton = { 610, 495, 160, 65 };  // Nút Back
             SDL_Rect backButton1 = { 815, 250, 30, 30 };  // Nút Back
-            std::cout << mouseX << ' ' << mouseY << std::endl;
             // Nhấn vào nút Music (tạm thời chưa xử lý logic)
             if (mouseX >= musicButton.x && mouseX <= musicButton.x + musicButton.w &&
                 mouseY >= musicButton.y && mouseY <= musicButton.y + musicButton.h) {
@@ -78,7 +77,6 @@ void handlePauseEvent(SDL_Event& event) {
     if (isGameOver && event.type == SDL_MOUSEBUTTONDOWN) {
         int mouseX, mouseY;
         SDL_GetMouseState(&mouseX, &mouseY);
-        std::cout << mouseX << ' ' << mouseY << std::endl;
         SDL_Rect retryButton = { 590, 330, 230, 120 }; // Nút chơi lại
         SDL_Rect exitButton = { 590, 480, 230, 120 };    // Nút về menu
 

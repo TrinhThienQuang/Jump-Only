@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="diamond.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="level1.cpp" />
     <ClCompile Include="level2.cpp" />
@@ -29,6 +30,7 @@
     <ClCompile Include="player.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="diamond.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="level.h" />
     <ClInclude Include="menu.h" />
