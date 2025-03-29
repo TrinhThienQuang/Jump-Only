@@ -15,6 +15,7 @@ SDL_Texture* pauseButtonTexture = nullptr; // Thêm texture cho nút Pause
 SDL_Texture* gearTexture = nullptr;
 int cameraY = 0;
 int lives = 1;
+SDL_Rect playerRect = { 0, 0, PLAYER_WIDTH, PLAYER_HEIGHT }; // Giá trị khởi tạo
 // Khởi tạo trạng thái game ban đầu là MENU
 GameState gameState = MENU;
 
@@ -99,6 +100,10 @@ bool init() {
     }
 
     // tải ảnh kim cương
+    diamondTexture = IMG_LoadTexture(renderer, "diamond3.png");
+    if (!diamondTexture) {
+        printf("Failed to load diamond texture : %s\n", SDL_GetError());
+    }
     
 
     return true; // **Chỉ return khi mọi thứ đã được tải xong**
@@ -185,8 +190,11 @@ void loadGame() {
 
 void restartGame() {
     // Reset lại trạng thái game
-    loadGame(); // Hàm này có thể là hàm khởi tạo lại game của bạn
-    isPaused = false; // Bỏ pause
+    loadGame();          // Reset vị trí nhân vật và camera
+    initializeDiamonds(); // Reset kim cương về trạng thái ban đầu
+
+    isPaused = false;    // Bỏ trạng thái pause
+    SDL_Log("Game restarted successfully!");
 }
 
 
@@ -208,6 +216,10 @@ void gameOver() {
 void gameLoop() {
     bool running = true;
     SDL_Event event;
+
+    // Khởi tạo các viên kim cương (chỉ cần làm một lần trước vòng lặp)
+    initializeDiamonds();
+
     if (gameState == LEVEL_1) {
         setupLevel1();
     }
@@ -217,6 +229,7 @@ void gameLoop() {
     else {
         setupLevel3();
     }
+
     while (running) {
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) running = false;
@@ -264,9 +277,11 @@ void gameLoop() {
                 running = false;
             }
         }
+
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
         renderBackground();
+
         if (gameState == LEVEL_1) {
             rendertileMap(1);
         }
@@ -276,6 +291,7 @@ void gameLoop() {
         else {
             rendertileMap(3);
         }
+
         renderPlayer();
         renderExplosions(); // 🔥 Vẽ hiệu ứng nổ
 
@@ -288,6 +304,15 @@ void gameLoop() {
         else {
             renderLevel3();
         }
+
+        // Gọi hàm vẽ kim cương
+        renderDiamonds();
+        renderDiamonds();           // Vẽ các kim cương chưa thu thập
+        renderCollectedDiamonds();  // Vẽ kim cương đã thu thập
+
+        // Gọi hàm kiểm tra va chạm giữa player và kim cương
+        checkDiamondCollision(playerRect);
+
         if (isGameOver) {
             renderGameOverScreen();
         }
@@ -302,7 +327,7 @@ void gameLoop() {
         }
 
         SDL_RenderPresent(renderer);
-        SDL_Delay(16);
+        SDL_Delay(16); // Khoảng thời gian giữa mỗi khung hình
     }
 }
 

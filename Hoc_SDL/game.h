@@ -29,7 +29,7 @@ extern SDL_Renderer* renderer;
 extern SDL_Texture* backgroundTexture;
 extern SDL_Texture* spikeTexture;
 extern SDL_Texture* wallTexture;
-
+extern SDL_Rect playerRect; // Biến toàn cục để lưu vị trí của nhân vật
 extern int cameraY;
 
 bool init();

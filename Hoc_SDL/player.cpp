@@ -1,6 +1,7 @@
 ﻿#include "player.h"
 #include "level.h"
 #include <vector>
+#include "diamond.h"
 
 Player player;
 SDL_Texture* playerTexture = nullptr;
@@ -72,7 +73,6 @@ void renderExplosions() {
 }
 
 
-// Cập nhật vụ nổ trong vòng lặp update
 void updatePlayer() {
     // Cập nhật nhân vật cũ
     player.dy += GRAVITY;
@@ -100,6 +100,10 @@ void updatePlayer() {
         if (cameraY < 0) cameraY = 0;
     }
 
+    // Kiểm tra va chạm với kim cương
+    SDL_Rect playerRect = { static_cast<int>(player.x), static_cast<int>(player.y), PLAYER_WIDTH, PLAYER_HEIGHT };
+    checkDiamondCollision(playerRect);
+
     if (player.dy != 0) {
         ghostTrails.push_back(GhostTrail{ (int)player.x, (int)player.y, 180 });
     }
@@ -119,7 +123,6 @@ void updatePlayer() {
     // Thêm cập nhật vụ nổ
     updateExplosions();
 }
-
 // Cập nhật render nhân vật để vẽ thêm hiệu ứng nổ
 void renderPlayer() {
     for (const auto& ghost : ghostTrails) {
