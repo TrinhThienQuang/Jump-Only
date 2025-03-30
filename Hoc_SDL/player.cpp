@@ -2,6 +2,7 @@
 #include "level.h"
 #include <vector>
 #include "diamond.h"
+#include "pause.h"
 
 Player player;
 SDL_Texture* playerTexture = nullptr;
@@ -74,6 +75,9 @@ void renderExplosions() {
 
 
 void updatePlayer() {
+    if (isLevelComplete) {
+        return;  // Ngăn không cập nhật vị trí nhân vật khi đã hoàn thành màn chơi
+    }
     // Cập nhật nhân vật cũ
     player.dy += GRAVITY;
     player.y += player.dy;

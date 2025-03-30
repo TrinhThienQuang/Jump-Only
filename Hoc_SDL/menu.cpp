@@ -2,6 +2,7 @@
 #include "game.h"
 #include <SDL_image.h>
 #include <iostream>
+#include "pause.h"
 
 bool gameRunning = false;
 SDL_Rect startButton = { 290, 260, 220, 80 }; // Giữ nguyên vùng bấm Start
@@ -66,16 +67,21 @@ void resetWindow() {
 
 // 🔹 Hiển thị menu trong cửa sổ chung
 void showMenu() {
-    // 🔹 Đặt cửa sổ menu thành 800x800
     SDL_SetWindowSize(window, 800, 800);
     SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
 
     loadMenuAssets();
     gameRunning = false; // 🔹 Đặt lại gameRunning thành false khi quay lại menu
 
-
     bool inMenu = true;
     SDL_Event e;
+
+    Mix_HaltMusic(); // Dừng bất kỳ nhạc nào đang chạy
+
+    // 🔹 Chỉ phát nhạc nếu isMusicOn == true
+    if (isMusicOn && menuMusic && Mix_PlayingMusic() == 0) {
+        Mix_PlayMusic(menuMusic, -1);
+    }
 
     while (inMenu) {
         while (SDL_PollEvent(&e)) {
@@ -83,21 +89,20 @@ void showMenu() {
             if (e.type == SDL_MOUSEBUTTONDOWN) {
                 if (isInsideButton(e.button.x, e.button.y)) { // Nhấn vào Play
                     showLevelMenu();
-                    inMenu = false; // Thoát menu để vào game
+                    inMenu = false;
                 }
                 if (isQuitButton(e.button.x, e.button.y)) {
                     SDL_Quit();
                     exit(0);
                 }
                 if (isLevelButton(e.button.x, e.button.y)) { // Nhấn vào Level
-                    showLevelMenu(); // Mở menu chọn cấp độ
-                    return; // Dừng vòng lặp menu chính
+                    showLevelMenu();
+                    return;
                 }
                 if (isOptionsButton(e.button.x, e.button.y)) { // Nhấn vào "SETTINGS"
-                    showOptionsMenu(); // Mở menu Settings
-                    return; // Dừng vòng lặp menu chính
+                    showOptionsMenu();
+                    return;
                 }
-
             }
         }
 
@@ -111,12 +116,10 @@ void showMenu() {
         SDL_RenderPresent(renderer);
     }
 
-    // 🔹 Đặt lại kích thước cửa sổ về 1400x800 khi vào game
     resetWindow();
-
-    // 🔹 Giải phóng tài nguyên menu
     SDL_DestroyTexture(menuBackground);
 }
+
 
 void showLevelMenu() {
     SDL_SetWindowSize(window, 800, 800);
@@ -135,18 +138,33 @@ void showLevelMenu() {
             if (e.type == SDL_QUIT) exit(0);
             if (e.type == SDL_MOUSEBUTTONDOWN) {
                 int x = e.button.x, y = e.button.y;
-                
+
                 if (x >= easyButton.x && x <= easyButton.x + easyButton.w &&
                     y >= easyButton.y && y <= easyButton.y + easyButton.h) {
                     std::cout << "Easy Mode Selected! Starting game...\n";
+                    restartGame();
+                    Mix_HaltMusic(); // Dừng nhạc menu
+
+                    // 🔹 Chỉ phát nhạc nếu isMusicOn == true
+                    if (isMusicOn) {
+                        Mix_PlayMusic(backgroundMusic, -1);
+                    }
+
                     resetWindow();
                     gameState = LEVEL_1;
                     inLevelMenu = false;
-
                 }
                 if (x >= normalButton.x && x <= normalButton.x + normalButton.w &&
                     y >= normalButton.y && y <= normalButton.y + normalButton.h) {
                     std::cout << "Normal Mode Selected! Starting game...\n";
+                    restartGame();
+                    Mix_HaltMusic(); // Dừng nhạc menu
+
+                    // 🔹 Chỉ phát nhạc nếu isMusicOn == true
+                    if (isMusicOn) {
+                        Mix_PlayMusic(backgroundMusic, -1);
+                    }
+
                     gameState = LEVEL_2;
                     resetWindow();
                     inLevelMenu = false;
@@ -154,6 +172,14 @@ void showLevelMenu() {
                 if (x >= hardButton.x && x <= hardButton.x + hardButton.w &&
                     y >= hardButton.y && y <= hardButton.y + hardButton.h) {
                     std::cout << "Hard Mode Selected! Starting game...\n";
+                    restartGame();
+                    Mix_HaltMusic(); // Dừng nhạc menu
+
+                    // 🔹 Chỉ phát nhạc nếu isMusicOn == true
+                    if (isMusicOn) {
+                        Mix_PlayMusic(backgroundMusic, -1);
+                    }
+
                     gameState = LEVEL_3;
                     resetWindow();
                     inLevelMenu = false;
@@ -172,6 +198,7 @@ void showLevelMenu() {
     // Khi chọn xong level, thoát menu và vào game
     gameRunning = true;
 }
+
 
 
 void showOptionsMenu() {

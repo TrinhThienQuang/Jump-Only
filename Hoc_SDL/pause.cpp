@@ -2,11 +2,17 @@
 #include <SDL_image.h>
 #include "game.h"
 #include "menu.h"
+#include "game.h"
 
 bool isPaused = false;
 bool isOptionsScreen = false;  // Biến xác định có đang ở màn hình options không
 SDL_Texture* previousFrameTextureGameOver = nullptr; // Lưu khung hình trước khi game over
 bool isGameOver = false;
+bool isLevelComplete = false;
+bool isMusicOn = true; // Mặc định nhạc bật
+
+
+
 
 
 SDL_Texture* previousFrameTexture = nullptr;
@@ -15,7 +21,10 @@ void handlePauseEvent(SDL_Event& event) {
     if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE) {
         isPaused = !isPaused;
         if (isPaused) {
-            captureCurrentFrame(); // Chụp khung hình hiện tại
+            Mix_PauseMusic();  // Dừng nhạc khi Pause
+        }
+        else {
+            Mix_ResumeMusic(); // Tiếp tục nhạc khi Unpause
         }
     }
     if (isPaused && event.type == SDL_MOUSEBUTTONDOWN) {
@@ -29,6 +38,7 @@ void handlePauseEvent(SDL_Event& event) {
 
         if (mouseX >= playButton.x && mouseX <= playButton.x + playButton.w &&
             mouseY >= playButton.y && mouseY <= playButton.y + playButton.h) {
+            Mix_ResumeMusic();
             isPaused = false; // Tiếp tục chơi
         }
         else if (mouseX >= restartButton.x && mouseX <= restartButton.x + restartButton.w &&
@@ -39,7 +49,12 @@ void handlePauseEvent(SDL_Event& event) {
             mouseY >= optionsButton.y && mouseY <= optionsButton.y + optionsButton.h) {
             isOptionsScreen = true;  // Chuyển sang màn hình options
         }
-        else if (isOptionsScreen) {
+        else if (mouseX >= quitButton.x && mouseX <= quitButton.x + quitButton.w &&
+            mouseY >= quitButton.y && mouseY <= quitButton.y + quitButton.h) {
+            restartGame();
+            showMenu(); // Vào lại menu
+        }
+        if (isOptionsScreen) {
             // Tọa độ các nút trong Options menu
             SDL_Rect musicButton = { 610, 315, 160, 65 };  // Nút Music
             SDL_Rect soundButton = { 610, 405, 160, 65 };  // Nút Sound
@@ -48,7 +63,14 @@ void handlePauseEvent(SDL_Event& event) {
             // Nhấn vào nút Music (tạm thời chưa xử lý logic)
             if (mouseX >= musicButton.x && mouseX <= musicButton.x + musicButton.w &&
                 mouseY >= musicButton.y && mouseY <= musicButton.y + musicButton.h) {
-                // TODO: Tắt / bật nhạc nền
+                isMusicOn = !isMusicOn; // 🔄 Đảo trạng thái nhạc
+
+                if (isMusicOn) {
+                    Mix_PlayMusic(backgroundMusic, -1);
+                }
+                else {
+                    Mix_HaltMusic(); // Tắt nhạc ngay lập tức
+                }
             }
             // Nhấn vào nút Sound (tạm thời chưa xử lý logic)
             else if (mouseX >= soundButton.x && mouseX <= soundButton.x + soundButton.w &&
@@ -66,13 +88,7 @@ void handlePauseEvent(SDL_Event& event) {
                 isOptionsScreen = false;  // Quay lại màn hình Pause
                 isPaused = true;           // Đảm bảo màn hình Pause vẫn hiển thị
             }
-        }
-
-        else if (mouseX >= quitButton.x && mouseX <= quitButton.x + quitButton.w &&
-            mouseY >= quitButton.y && mouseY <= quitButton.y + quitButton.h) {
-            restartGame();
-            showMenu(); // Vào lại menu
-        }
+        }  
     }
     if (isGameOver && event.type == SDL_MOUSEBUTTONDOWN) {
         int mouseX, mouseY;
@@ -91,7 +107,23 @@ void handlePauseEvent(SDL_Event& event) {
             showMenu();
         }
     }
+    if (isLevelComplete && event.type == SDL_MOUSEBUTTONDOWN) {
+        int mouseX, mouseY;
+        SDL_GetMouseState(&mouseX, &mouseY);
 
+        SDL_Rect replayButton = { 580, 470, 235, 40 }; // Vị trí nút Replay
+        SDL_Rect menuButton = { 580, 530, 235, 70 };   // Vị trí nút Menu
+        if (mouseX >= replayButton.x && mouseX <= replayButton.x + replayButton.w &&
+            mouseY >= replayButton.y && mouseY <= replayButton.y + replayButton.h) {
+            isLevelComplete = false;
+            restartGame(); // Hàm khởi động lại màn chơi
+        }
+        else if (mouseX >= menuButton.x && mouseX <= menuButton.x + menuButton.w &&
+            mouseY >= menuButton.y && mouseY <= menuButton.y + menuButton.h) {
+            isLevelComplete = false;
+            showMenu(); // Quay lại menu chính
+        }
+    }
 }
 
 
@@ -114,6 +146,7 @@ void captureCurrentFrame() {
 
 void renderGameOverScreen() {
     if (isGameOver) {
+        Mix_HaltMusic();
         SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 150);
         SDL_Rect overlay = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
@@ -129,7 +162,6 @@ void renderGameOverScreen() {
         }
     }
 }
-
 
 
 
@@ -179,4 +211,21 @@ void renderOptionsScreen() {
 }
 
 
+void renderLevelCompleteScreen() {
+    if (isLevelComplete) {
+        SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 150);
+        SDL_Rect overlay = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
+        SDL_RenderFillRect(renderer, &overlay);
+
+        SDL_Surface* levelCompleteSurface = IMG_Load("complete.png");
+        if (levelCompleteSurface) {
+            SDL_Texture* levelCompleteTexture = SDL_CreateTextureFromSurface(renderer, levelCompleteSurface);
+            SDL_Rect levelCompleteRect = { (SCREEN_WIDTH - 500) / 2, (SCREEN_HEIGHT - 500) / 2, 500, 500 };
+            SDL_RenderCopy(renderer, levelCompleteTexture, NULL, &levelCompleteRect);
+            SDL_DestroyTexture(levelCompleteTexture);
+            SDL_FreeSurface(levelCompleteSurface);
+        }
+    }
+}
 
