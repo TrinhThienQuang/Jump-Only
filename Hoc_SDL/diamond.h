@@ -14,6 +14,7 @@ struct Diamond {
 extern SDL_Texture* diamondTexture;
 extern SDL_Texture* heartTexture;
 extern Diamond diamonds[3];
+extern int collectedDiamonds;
 
 // Khởi tạo kim cương
 void initializeDiamonds();

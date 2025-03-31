@@ -30,7 +30,7 @@ void loadLevelMenuAssets() {
 
 // Load ảnh nền setting
 void loadOptionsMenuAssets() {
-    optionsMenuBackground = IMG_LoadTexture(renderer, "options1.png");
+    optionsMenuBackground = IMG_LoadTexture(renderer, "option.png");
     if (!optionsMenuBackground) {
         std::cout << "Failed to load options menu background! Error: " << IMG_GetError() << std::endl;
     }
@@ -210,12 +210,42 @@ void showOptionsMenu() {
 
     bool inOptionsMenu = true;
     SDL_Event e;
+    SDL_Rect musicButton = { 140, 290, 510, 90 };
+    SDL_Rect soundButton = { 140, 420, 510, 90 };
+    SDL_Rect backButton = { 270, 560, 260, 80 };
 
     while (inOptionsMenu) {
         while (SDL_PollEvent(&e)) {
             if (e.type == SDL_QUIT) exit(0);
             if (e.type == SDL_MOUSEBUTTONDOWN) { // Nếu bấm chuột
-                inOptionsMenu = false; // Thoát khỏi menu options
+                int x = e.button.x, y = e.button.y;
+                std::cout << x << ' ' << y << std::endl;
+                if (x >= musicButton.x && x <= musicButton.x + musicButton.w &&
+                    y >= musicButton.y && y <= musicButton.y + musicButton.h) {
+                    isMusicOn = !isMusicOn; // 🔄 Đảo trạng thái nhạc
+                    if (isMusicOn) {
+                        // 🔹 Nếu đang ở menu, phát nhạc menu
+                        if (!gameRunning) {
+                            Mix_PlayMusic(menuMusic, -1);
+                        }
+                        // 🔹 Nếu đang trong game, phát nhạc game
+                        else {
+                            Mix_PlayMusic(backgroundMusic, -1);
+                        }
+                    }
+                    else {
+                        Mix_HaltMusic(); // Tắt nhạc ngay lập tức
+                    }
+                }
+                else if (x >= soundButton.x && x <= soundButton.x + soundButton.w &&
+                    y >= soundButton.y && y <= soundButton.y + soundButton.h) {
+                    // bật tắt sound
+                }
+                else if (x >= quitButton.x && x <= quitButton.x + quitButton.w &&
+                    y >= quitButton.y && y <= quitButton.y + quitButton.h) {
+                    inOptionsMenu = false;
+                }
+
             }
         }
 

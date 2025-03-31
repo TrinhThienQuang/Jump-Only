@@ -5,8 +5,10 @@
 SDL_Texture* diamondTexture = nullptr;
 SDL_Texture* heartTexture = nullptr;
 Diamond diamonds[3];
+int collectedDiamonds = 0;
 
 void initializeDiamonds() {
+    collectedDiamonds = 0;
     // Khởi tạo vị trí các kim cương
     diamonds[0] = { {SCREEN_WIDTH / 2 - 16, LEVEL_HEIGHT - SCREEN_HEIGHT + 50, 64, 64}, false };
     diamonds[1] = { {SCREEN_WIDTH / 4 - 50, LEVEL_HEIGHT - SCREEN_HEIGHT - 700, 64, 64}, false };
@@ -32,6 +34,7 @@ void checkDiamondCollision(const SDL_Rect& player) {
     for (int i = 0; i < 3; i++) {
         if (!diamonds[i].isCollected && SDL_HasIntersection(&player, &diamonds[i].position)) {
             diamonds[i].isCollected = true;
+            collectedDiamonds++;
         }
     }
 }

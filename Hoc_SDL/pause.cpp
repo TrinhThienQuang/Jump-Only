@@ -2,19 +2,13 @@
 #include <SDL_image.h>
 #include "game.h"
 #include "menu.h"
-#include "game.h"
+#include "diamond.h"
 
 bool isPaused = false;
 bool isOptionsScreen = false;  // Biến xác định có đang ở màn hình options không
-SDL_Texture* previousFrameTextureGameOver = nullptr; // Lưu khung hình trước khi game over
 bool isGameOver = false;
 bool isLevelComplete = false;
 bool isMusicOn = true; // Mặc định nhạc bật
-
-
-
-
-
 SDL_Texture* previousFrameTexture = nullptr;
 
 void handlePauseEvent(SDL_Event& event) {
@@ -27,13 +21,12 @@ void handlePauseEvent(SDL_Event& event) {
             Mix_ResumeMusic(); // Tiếp tục nhạc khi Unpause
         }
     }
-    if (isPaused && event.type == SDL_MOUSEBUTTONDOWN) {
+    if (isPaused && !isOptionsScreen && event.type == SDL_MOUSEBUTTONDOWN) {
         int mouseX, mouseY;
         SDL_GetMouseState(&mouseX, &mouseY);
-
         SDL_Rect playButton = { 530, 350, 150, 100 };
         SDL_Rect restartButton = { 720, 350, 150, 100 };
-        SDL_Rect optionsButton = { 530, 490, 150, 100 }; 
+        SDL_Rect optionsButton = { 530, 490, 150, 100 };
         SDL_Rect quitButton = { 720, 490, 100, 100 };
 
         if (mouseX >= playButton.x && mouseX <= playButton.x + playButton.w &&
@@ -54,42 +47,45 @@ void handlePauseEvent(SDL_Event& event) {
             restartGame();
             showMenu(); // Vào lại menu
         }
-        if (isOptionsScreen) {
-            // Tọa độ các nút trong Options menu
-            SDL_Rect musicButton = { 610, 315, 160, 65 };  // Nút Music
-            SDL_Rect soundButton = { 610, 405, 160, 65 };  // Nút Sound
-            SDL_Rect backButton = { 610, 495, 160, 65 };  // Nút Back
-            SDL_Rect backButton1 = { 815, 250, 30, 30 };  // Nút Back
-            // Nhấn vào nút Music (tạm thời chưa xử lý logic)
-            if (mouseX >= musicButton.x && mouseX <= musicButton.x + musicButton.w &&
-                mouseY >= musicButton.y && mouseY <= musicButton.y + musicButton.h) {
-                isMusicOn = !isMusicOn; // 🔄 Đảo trạng thái nhạc
+    }
 
-                if (isMusicOn) {
-                    Mix_PlayMusic(backgroundMusic, -1);
+    // Chỉ xử lý sự kiện của Options nếu đang ở Options
+    if (isOptionsScreen && event.type == SDL_MOUSEBUTTONDOWN) {
+        int mouseX, mouseY;
+        SDL_GetMouseState(&mouseX, &mouseY);
+
+        SDL_Rect musicButton = { 610, 315, 160, 65 };  // Nút Music
+        SDL_Rect soundButton = { 610, 405, 160, 65 };  // Nút Sound
+        SDL_Rect backButton = { 610, 495, 160, 65 };  // Nút Back
+        SDL_Rect backButton1 = { 815, 250, 30, 30 };  // Nút Back
+
+        if (mouseX >= musicButton.x && mouseX <= musicButton.x + musicButton.w &&
+            mouseY >= musicButton.y && mouseY <= musicButton.y + musicButton.h) {
+            isMusicOn = !isMusicOn;
+            if (isMusicOn) {
+                if (!gameRunning) {
+                    Mix_PlayMusic(menuMusic, -1);
                 }
                 else {
-                    Mix_HaltMusic(); // Tắt nhạc ngay lập tức
+                    Mix_PlayMusic(backgroundMusic, -1);
                 }
             }
-            // Nhấn vào nút Sound (tạm thời chưa xử lý logic)
-            else if (mouseX >= soundButton.x && mouseX <= soundButton.x + soundButton.w &&
-                mouseY >= soundButton.y && mouseY <= soundButton.y + soundButton.h) {
-                // TODO: Tắt / bật âm thanh
+            else {
+                Mix_HaltMusic();
             }
-            // Nhấn vào nút Back để quay lại Pause
-            else if (mouseX >= backButton.x && mouseX <= backButton.x + backButton.w &&
-                mouseY >= backButton.y && mouseY <= backButton.y + backButton.h) {
-                isOptionsScreen = false;  // Quay lại màn hình Pause
-                isPaused = true;           // Đảm bảo màn hình Pause vẫn hiển thị
-            }
-            else if (mouseX >= backButton1.x && mouseX <= backButton1.x + backButton1.w &&
-                mouseY >= backButton1.y && mouseY <= backButton1.y + backButton1.h) {
-                isOptionsScreen = false;  // Quay lại màn hình Pause
-                isPaused = true;           // Đảm bảo màn hình Pause vẫn hiển thị
-            }
-        }  
+        }
+        else if (mouseX >= soundButton.x && mouseX <= soundButton.x + soundButton.w &&
+            mouseY >= soundButton.y && mouseY <= soundButton.y + soundButton.h) {
+            // TODO: Tắt / bật âm thanh
+        }
+        else if ((mouseX >= backButton.x && mouseX <= backButton.x + backButton.w &&
+            mouseY >= backButton.y && mouseY <= backButton.y + backButton.h) ||
+            (mouseX >= backButton1.x && mouseX <= backButton1.x + backButton1.w &&
+                mouseY >= backButton1.y && mouseY <= backButton1.y + backButton1.h)) {
+            isOptionsScreen = false;  // Quay lại màn hình Pause
+        }
     }
+
     if (isGameOver && event.type == SDL_MOUSEBUTTONDOWN) {
         int mouseX, mouseY;
         SDL_GetMouseState(&mouseX, &mouseY);
@@ -218,14 +214,28 @@ void renderLevelCompleteScreen() {
         SDL_Rect overlay = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
         SDL_RenderFillRect(renderer, &overlay);
 
-        SDL_Surface* levelCompleteSurface = IMG_Load("complete.png");
-        if (levelCompleteSurface) {
-            SDL_Texture* levelCompleteTexture = SDL_CreateTextureFromSurface(renderer, levelCompleteSurface);
-            SDL_Rect levelCompleteRect = { (SCREEN_WIDTH - 500) / 2, (SCREEN_HEIGHT - 500) / 2, 500, 500 };
-            SDL_RenderCopy(renderer, levelCompleteTexture, NULL, &levelCompleteRect);
-            SDL_DestroyTexture(levelCompleteTexture);
-            SDL_FreeSurface(levelCompleteSurface);
+        // Chọn ảnh tương ứng với số kim cương đã nhặt
+        const char* starImage = "stars_0.png";
+        if (collectedDiamonds == 1) {
+            starImage = "star1.png";
+        }
+        else if (collectedDiamonds == 2) {
+            starImage = "star2.png";
+        }
+        else if (collectedDiamonds == 3) {
+            starImage = "star3.png";
+        }
+
+        // Tải ảnh sao tương ứng
+        SDL_Surface* starSurface = IMG_Load(starImage);
+        if (starSurface) {
+            SDL_Texture* starTexture = SDL_CreateTextureFromSurface(renderer, starSurface);
+            SDL_Rect starRect = { (SCREEN_WIDTH - 500) / 2, (SCREEN_HEIGHT - 500) / 2, 500, 500 };
+            SDL_RenderCopy(renderer, starTexture, NULL, &starRect);
+            SDL_DestroyTexture(starTexture);
+            SDL_FreeSurface(starSurface);
         }
     }
 }
+
 
