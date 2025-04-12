@@ -52,7 +52,7 @@ bool init() {
 
 
     // Tải background
-    SDL_Surface* bgSurface = IMG_Load("background5.jpg");
+    SDL_Surface* bgSurface = IMG_Load("background.jpg");
     if (!bgSurface) {
         std::cout << "Failed to load background image! Error: " << IMG_GetError() << std::endl;
         return false;

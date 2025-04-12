@@ -15,7 +15,7 @@ SDL_Texture* optionsMenuBackground = nullptr; // Ảnh nền options
 
 // 🔹 Load ảnh nền menu
 void loadMenuAssets() {
-    menuBackground = IMG_LoadTexture(renderer, "menu3.png"); // Đổi thành file của bạn
+    menuBackground = IMG_LoadTexture(renderer, "menu3.png");
     if (!menuBackground) {
         std::cout << "Failed to load menu background! Error: " << IMG_GetError() << std::endl;
     }

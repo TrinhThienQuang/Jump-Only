@@ -3,9 +3,9 @@
 #include "game.h"
 #include <vector>
 
-std::vector<Obstacle> obstacles(13);
+std::vector<Obstacle> obstacles(100);
 SDL_Texture* customObstacleTextures[4] = { nullptr }; // 4 vật cản mới
-std::vector<float> gearAngle(9, 0.0f);
+std::vector<float> gearAngle(100, 0.0f);
 void initLevel1() {
     gearAngle.resize(9, 0.0f);  // Đảm bảo có 9 phần tử
     obstacles.clear();  // Xóa các phần tử cũ trước khi khởi tạo level 1
