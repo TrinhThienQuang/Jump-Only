@@ -5,20 +5,20 @@
 #include "diamond.h"
 
 bool isPaused = false;
-bool isOptionsScreen = false;  // Biến xác định có đang ở màn hình options không
+bool isOptionsScreen = false; 
 bool isGameOver = false;
 bool isLevelComplete = false;
-bool isMusicOn = true; // Mặc định nhạc bật
+bool isMusicOn = true; 
 SDL_Texture* previousFrameTexture = nullptr;
 
 void handlePauseEvent(SDL_Event& event) {
     if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE) {
         isPaused = !isPaused;
         if (isPaused) {
-            Mix_PauseMusic();  // Dừng nhạc khi Pause
+            Mix_PauseMusic();  // dừng nhạc khi pause
         }
         else {
-            Mix_ResumeMusic(); // Tiếp tục nhạc khi Unpause
+            Mix_ResumeMusic();
         }
     }
     if (isPaused && !isOptionsScreen && event.type == SDL_MOUSEBUTTONDOWN) {
@@ -32,24 +32,23 @@ void handlePauseEvent(SDL_Event& event) {
         if (mouseX >= playButton.x && mouseX <= playButton.x + playButton.w &&
             mouseY >= playButton.y && mouseY <= playButton.y + playButton.h) {
             Mix_ResumeMusic();
-            isPaused = false; // Tiếp tục chơi
+            isPaused = false;
         }
         else if (mouseX >= restartButton.x && mouseX <= restartButton.x + restartButton.w &&
             mouseY >= restartButton.y && mouseY <= restartButton.y + restartButton.h) {
-            restartGame(); // Gọi hàm restart game
+            restartGame(); 
         }
         else if (mouseX >= optionsButton.x && mouseX <= optionsButton.x + optionsButton.w &&
             mouseY >= optionsButton.y && mouseY <= optionsButton.y + optionsButton.h) {
-            isOptionsScreen = true;  // Chuyển sang màn hình options
+            isOptionsScreen = true;  
         }
         else if (mouseX >= quitButton.x && mouseX <= quitButton.x + quitButton.w &&
             mouseY >= quitButton.y && mouseY <= quitButton.y + quitButton.h) {
             restartGame();
-            showMenu(); // Vào lại menu
+            showMenu();
         }
     }
 
-    // Chỉ xử lý sự kiện của Options nếu đang ở Options
     if (isOptionsScreen && event.type == SDL_MOUSEBUTTONDOWN) {
         int mouseX, mouseY;
         SDL_GetMouseState(&mouseX, &mouseY);
@@ -107,17 +106,17 @@ void handlePauseEvent(SDL_Event& event) {
         int mouseX, mouseY;
         SDL_GetMouseState(&mouseX, &mouseY);
 
-        SDL_Rect replayButton = { 580, 470, 235, 40 }; // Vị trí nút Replay
-        SDL_Rect menuButton = { 580, 530, 235, 70 };   // Vị trí nút Menu
+        SDL_Rect replayButton = { 580, 470, 235, 40 }; // nút Replay
+        SDL_Rect menuButton = { 580, 530, 235, 70 };   // nút Menu
         if (mouseX >= replayButton.x && mouseX <= replayButton.x + replayButton.w &&
             mouseY >= replayButton.y && mouseY <= replayButton.y + replayButton.h) {
             isLevelComplete = false;
-            restartGame(); // Hàm khởi động lại màn chơi
+            restartGame();
         }
         else if (mouseX >= menuButton.x && mouseX <= menuButton.x + menuButton.w &&
             mouseY >= menuButton.y && mouseY <= menuButton.y + menuButton.h) {
             isLevelComplete = false;
-            showMenu(); // Quay lại menu chính
+            showMenu();
         }
     }
 }
@@ -128,15 +127,10 @@ void captureCurrentFrame() {
     if (previousFrameTexture) {
         SDL_DestroyTexture(previousFrameTexture);
     }
-
-    // Tạo một surface để lưu hình ảnh từ renderer
     SDL_Surface* surface = SDL_CreateRGBSurfaceWithFormat(0, SCREEN_WIDTH, SCREEN_HEIGHT, 32, SDL_PIXELFORMAT_RGBA8888);
     SDL_RenderReadPixels(renderer, NULL, SDL_PIXELFORMAT_RGBA8888, surface->pixels, surface->pitch);
-
-    // Chuyển surface thành texture
     previousFrameTexture = SDL_CreateTextureFromSurface(renderer, surface);
-
-    SDL_FreeSurface(surface); // Giải phóng surface sau khi sử dụng
+    SDL_FreeSurface(surface);
 }
 
 
@@ -162,7 +156,7 @@ void renderGameOverScreen() {
 
 
 void renderPauseScreen() {
-    if (isPaused && !isOptionsScreen) {  // Chỉ vẽ màn hình pause nếu không ở options
+    if (isPaused && !isOptionsScreen) {
         if (previousFrameTexture) {
             SDL_RenderCopy(renderer, previousFrameTexture, NULL, NULL);
         }
@@ -213,8 +207,6 @@ void renderLevelCompleteScreen() {
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 150);
         SDL_Rect overlay = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
         SDL_RenderFillRect(renderer, &overlay);
-
-        // Chọn ảnh tương ứng với số kim cương đã nhặt
         const char* starImage = "stars_0.png";
         if (collectedDiamonds == 1) {
             starImage = "star1.png";

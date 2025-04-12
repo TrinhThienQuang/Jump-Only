@@ -22,16 +22,15 @@ const int SCREEN_WIDTH = 1400;
 const int SCREEN_HEIGHT = 800;
 const int LEVEL_HEIGHT = 6500;
 
-extern int lives;
-
 
 extern SDL_Window* window;
 extern SDL_Renderer* renderer;
 extern SDL_Texture* backgroundTexture;
 extern SDL_Texture* spikeTexture;
 extern SDL_Texture* wallTexture;
-extern SDL_Rect playerRect; // Biến toàn cục để lưu vị trí của nhân vật
+extern SDL_Rect playerRect; // Biến lưu vị trí của nhân vật
 extern int cameraY;
+extern int lives;
 extern Mix_Music* backgroundMusic;
 extern Mix_Music* menuMusic;
 

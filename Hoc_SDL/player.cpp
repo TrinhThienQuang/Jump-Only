@@ -8,14 +8,10 @@ Player player;
 SDL_Texture* playerTexture = nullptr;
 int playerWidth, playerHeight;
 std::vector<GhostTrail> ghostTrails;
-
-
-
-// Thêm biến toàn cục cho hiệu ứng nổ
 SDL_Texture* explosionTexture = nullptr;
 std::vector<Explosion> explosions;
 
-// Xử lí bàn phím
+
 void handleInput(SDL_Event& event) {
     if (event.type == SDL_KEYDOWN) {
         if (event.key.keysym.sym == SDLK_LEFT) {
@@ -45,7 +41,7 @@ void updateExplosions() {
         }
     }
 
-    // Xóa vụ nổ đã hoàn thành
+    // Xóa vụ nổ 
     explosions.erase(std::remove_if(explosions.begin(), explosions.end(),
         [](const Explosion& e) { return !e.active; }), explosions.end());
 }
@@ -53,8 +49,6 @@ void updateExplosions() {
 
 // Vẽ vụ nổ
 void renderExplosions() {
-    if (!explosionTexture) return; // Kiểm tra nếu chưa load ảnh
-
     for (const auto& explosion : explosions) {
         if (explosion.active) {
             SDL_Rect srcRect = {
@@ -78,7 +72,6 @@ void updatePlayer() {
     if (isLevelComplete) {
         return;  // Ngăn không cập nhật vị trí nhân vật khi đã hoàn thành màn chơi
     }
-    // Cập nhật nhân vật cũ
     player.dy += GRAVITY;
     player.y += player.dy;
     player.x += player.dx;
@@ -127,19 +120,16 @@ void updatePlayer() {
     // Thêm cập nhật vụ nổ
     updateExplosions();
 }
-// Cập nhật render nhân vật để vẽ thêm hiệu ứng nổ
+
 void renderPlayer() {
     for (const auto& ghost : ghostTrails) {
         SDL_SetTextureAlphaMod(playerTexture, ghost.alpha);
         SDL_Rect ghostRect = { ghost.x, ghost.y - cameraY, PLAYER_WIDTH, PLAYER_HEIGHT };
         SDL_RenderCopy(renderer, playerTexture, NULL, &ghostRect);
     }
-
     SDL_SetTextureAlphaMod(playerTexture, 255);
     SDL_Rect playerRect = { player.x, player.y - cameraY, PLAYER_WIDTH, PLAYER_HEIGHT };
     SDL_RenderCopy(renderer, playerTexture, NULL, &playerRect);
-
-    // Vẽ vụ nổ
     renderExplosions();
 }
 

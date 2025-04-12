@@ -6,12 +6,16 @@
 #include "game.h"
 #include <vector>
 
-const int TILE_SIZE = 50; // Kích thước mỗi ô vuông
-const int MAP_WIDTH = 28; // Số ô theo chiều ngang
-const int MAP_HEIGHT = 50; // Số ô theo chiều dọc (LEVEL_HEIGHT / TILE_SIZE)
+const int TILE_SIZE = 50;              // Kích thước mỗi ô vuông
+const int MAP_WIDTH = 28;              // Số ô theo chiều ngang
+const int MAP_HEIGHT = 50;             // Số ô theo chiều dọc
+const int OBSTACLE_WIDTH = 150;        // độ rộng bánh răng
+const int OBSTACLE_HEIGHT = 150;       // độ dài bánh răng
+const int MOVING_OBSTACLE_SPEED = 3;   // tốc độ bánh răng
+const int RESIZE_SPEED = 4;            // tốc độ co giãn
+const float ROTATION_SPEED = 10.0f;    // Tốc độ xoay
 
-
-// Khai báo mảng tileMap1
+// tilemap
 extern const int tileMap1[MAP_HEIGHT][MAP_WIDTH];
 extern const int tileMap2[MAP_HEIGHT][MAP_WIDTH];
 extern const int tileMap3[MAP_HEIGHT][MAP_WIDTH];
@@ -25,18 +29,11 @@ struct Obstacle {
     float angle;              // Góc xoay
 };
 
-extern SDL_Texture* customObstacleTextures[4]; // Texture cho 4 vật cản mới
-extern SDL_Texture* gearTexture; // Texture bánh răng
+extern SDL_Texture* customObstacleTextures[4]; 
+extern SDL_Texture* gearTexture; 
 extern std::vector<Obstacle> obstacles;
 extern std::vector<float> gearAngle;
 
-
-
-const int OBSTACLE_WIDTH = 150;
-const int OBSTACLE_HEIGHT = 150;
-const int MOVING_OBSTACLE_SPEED = 3;
-const int RESIZE_SPEED = 4;
-const float ROTATION_SPEED = 10.0f; // Tốc độ xoay
 
 void renderLevel1();
 void renderLevel2();
@@ -50,9 +47,6 @@ bool checkCollisionLevel3();
 void setupLevel1();
 void setupLevel2();
 void setupLevel3();
-
-
-
 
 
 #endif

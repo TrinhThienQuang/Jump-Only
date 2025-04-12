@@ -9,10 +9,10 @@
 SDL_Window * window = nullptr;
 SDL_Renderer* renderer = nullptr;
 SDL_Texture* backgroundTexture = nullptr;
-SDL_Texture* spikeTexture = nullptr; // Texture cho gai nhọn
+SDL_Texture* spikeTexture = nullptr;
 SDL_Texture* wallTexture = nullptr;
 SDL_Texture* commonObstacleTexture = nullptr;
-SDL_Texture* pauseButtonTexture = nullptr; // Thêm texture cho nút Pause
+SDL_Texture* pauseButtonTexture = nullptr;
 SDL_Texture* gearTexture = nullptr;
 int cameraY = 0;
 int lives = 3;
@@ -35,8 +35,6 @@ bool init() {
         std::cout << "SDL_image Init Failed! Error: " << IMG_GetError() << std::endl;
         return false;
     }
-    
-    // Khởi tạo SDL_mixer
     if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
         std::cout << "SDL_mixer Init Failed! Error: " << Mix_GetError() << std::endl;
         return false;
@@ -50,7 +48,6 @@ bool init() {
         return false;
     }
 
-
     // Tải background
     SDL_Surface* bgSurface = IMG_Load("background.jpg");
     if (!bgSurface) {
@@ -61,7 +58,7 @@ bool init() {
     SDL_FreeSurface(bgSurface);
     if (!backgroundTexture) return false;
 
-    // **Tải nhân vật**
+    // Tải nhân vật
     SDL_Surface* playerSurface = IMG_Load("character.png");
     if (!playerSurface) {
         std::cout << "Failed to load player image! Error: " << IMG_GetError() << std::endl;
@@ -100,13 +97,11 @@ bool init() {
         return false;
     }
     // tải vật cản co giãn
-    SDL_Texture* commonObstacleTexture = IMG_LoadTexture(renderer, "gear1.png");
+    SDL_Texture* commonObstacleTexture = IMG_LoadTexture(renderer, "gear.png");
     if (!commonObstacleTexture) {
         std::cout << "Failed to load common obstacle image! Error: " << IMG_GetError() << std::endl;
         return false;
     }
-
-    // Gán texture chung cho 4 vật thể mới
     for (int i = 0; i < 4; i++) {
         customObstacleTextures[i] = commonObstacleTexture;
     }
@@ -118,7 +113,7 @@ bool init() {
     }
 
     // tải ảnh kim cương
-    diamondTexture = IMG_LoadTexture(renderer, "diamond3.png");
+    diamondTexture = IMG_LoadTexture(renderer, "diamond.png");
     if (!diamondTexture) {
         printf("Failed to load diamond texture : %s\n", SDL_GetError());
     }
@@ -129,7 +124,7 @@ bool init() {
         printf("Failed to load heart image: %s\n", SDL_GetError());
     }
 
-    return true; // **Chỉ return khi mọi thứ đã được tải xong**
+    return true;
 }
 
 
@@ -147,9 +142,7 @@ void renderBackground() {
 
 
 void rendertileMap(int level) {
-    const int (*tileMap)[MAP_WIDTH]; // Con trỏ đến mảng tileMap phù hợp
-
-    // Chọn tileMap theo level
+    const int (*tileMap)[MAP_WIDTH];
     if (level == LEVEL_1) {
         tileMap = tileMap1;
     }
@@ -160,7 +153,7 @@ void rendertileMap(int level) {
         tileMap = tileMap3;
     }
     else {
-        return; // Level không hợp lệ
+        return; 
     }
 
     for (int y = 0; y < MAP_HEIGHT; y++) {
@@ -176,17 +169,17 @@ void rendertileMap(int level) {
         for (int x = 0; x < MAP_WIDTH; x++) {
             SDL_Rect tileRect = { x * TILE_SIZE, y * TILE_SIZE - cameraY, TILE_SIZE, TILE_SIZE };
 
-            // Vẽ gai nhọn (tile 2)
+            // Vẽ gai nhọn 
             if (tileMap[y][x] == 2 && spikeTexture != nullptr) {
-                double angle = 0.0; // Mặc định hướng lên
+                double angle = 0.0; 
                 if (y > 0 && tileMap[y - 1][x] == 1) {
-                    angle = 180.0; // Gai nhọn hướng xuống
+                    angle = 180.0; 
                 }
                 else if (x > 0 && tileMap[y][x - 1] == 1) {
-                    angle = 90.0; // Gai nhọn hướng trái
+                    angle = 90.0; 
                 }
                 else if (x < MAP_WIDTH - 1 && tileMap[y][x + 1] == 1) {
-                    angle = 270.0; // Gai nhọn hướng phải
+                    angle = 270.0; 
                 }
                 SDL_RenderCopyEx(renderer, spikeTexture, NULL, &tileRect, angle, NULL, SDL_FLIP_NONE);
             }
@@ -194,39 +187,25 @@ void rendertileMap(int level) {
     }
 }
 
-
-
 void loadGame() {
-    // Đặt nhân vật về vị trí ở đáy màn hình
-    player.x = SCREEN_WIDTH / 2 - PLAYER_WIDTH / 2;  // Giữ nguyên vị trí giữa màn hình
-    player.y = LEVEL_HEIGHT - PLAYER_HEIGHT - 50;   // Đặt cách đáy một khoảng an toàn
-
+    player.x = SCREEN_WIDTH / 2 - PLAYER_WIDTH / 2;  
+    player.y = LEVEL_HEIGHT - PLAYER_HEIGHT - 50; 
     player.dx = 0;
     player.dy = 0;
-    // Đặt camera để hiển thị đúng phần đáy màn hình
     cameraY = LEVEL_HEIGHT - SCREEN_HEIGHT;
-    if (cameraY < 0) cameraY = 0; // Đảm bảo không vượt quá giới hạn
+    if (cameraY < 0) cameraY = 0;
 }
 
-
-
 void restartGame() {
-    // Reset lại trạng thái game
-    loadGame();          // Reset vị trí nhân vật và camera
-    initializeDiamonds(); // Reset kim cương về trạng thái ban đầu
-
-    // 🔹 Đầu tiên, dừng nhạc hoàn toàn để tránh lỗi phát lại không mong muốn
+    loadGame();      
+    initializeDiamonds();
     Mix_HaltMusic();
-
-    // 🔹 Chỉ phát nhạc nếu isMusicOn == true
     if (isMusicOn && backgroundMusic) {
         Mix_PlayMusic(backgroundMusic, -1);
     }
 
-    isPaused = false; // Bỏ trạng thái pause
+    isPaused = false;
 }
-
-
 
 
 void gameOver() {
@@ -242,14 +221,10 @@ void gameOver() {
 
 
 
-
-
 void gameLoop() {
     bool running = true;
     SDL_Event event;
-
-    // Khởi tạo các viên kim cương (chỉ cần làm một lần trước vòng lặp)
-    initializeDiamonds();
+    initializeDiamonds(); // Khởi tạo kc
 
     if (gameState == LEVEL_1) {
         setupLevel1();
@@ -264,7 +239,7 @@ void gameLoop() {
     while (running) {
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) running = false;
-            handlePauseEvent(event); // Xử lý ESC để pause
+            handlePauseEvent(event);
 
             if (!isPaused) {
                 handleInput(event);
@@ -273,7 +248,7 @@ void gameLoop() {
 
         if (!isPaused) {
             updatePlayer();
-            updateExplosions(); // 🔥 Cập nhật hiệu ứng nổ
+            updateExplosions();
 
             if (gameState == LEVEL_1) {
                 updateMovingLevel1();
@@ -310,7 +285,7 @@ void gameLoop() {
                 std::cout << "You win!" << std::endl;
                 Mix_HaltMusic();
                 isLevelComplete = true;
-                player.y = 0;  // Giữ nhân vật tại vạch đích, không cho di chuyển tiếp
+                player.y = 0; 
             }
 
 
@@ -331,7 +306,7 @@ void gameLoop() {
         }
 
         renderPlayer();
-        renderExplosions(); // 🔥 Vẽ hiệu ứng nổ
+        renderExplosions(); 
 
         if (gameState == LEVEL_1) {
             renderLevel1();
@@ -343,12 +318,9 @@ void gameLoop() {
             renderLevel3();
         }
 
-        // Gọi hàm vẽ kim cương
-        renderDiamonds();           // Vẽ các kim cương chưa thu thập
-        renderCollectedDiamonds();  // Vẽ kim cương đã thu thập
+        renderDiamonds();     
+        renderCollectedDiamonds(); 
         renderLives();
-
-        // Gọi hàm kiểm tra va chạm giữa player và kim cương
         checkDiamondCollision(playerRect);
 
         if (isGameOver) {
@@ -361,18 +333,18 @@ void gameLoop() {
             else {
                 renderPauseScreen();
             }
-            SDL_RenderPresent(renderer);  // Cập nhật màn hình
+            SDL_RenderPresent(renderer); 
         }
 
         if (isLevelComplete) {
             renderLevelCompleteScreen();
-            SDL_RenderPresent(renderer);  // Đảm bảo hiển thị màn hình chiến thắng
+            SDL_RenderPresent(renderer); 
             SDL_Delay(16);
-            continue;  // Ngăn game tiếp tục render các phần khác
+            continue; 
         }
 
         SDL_RenderPresent(renderer);
-        SDL_Delay(16);  // Khoảng thời gian giữa mỗi khung hình
+        SDL_Delay(16);
 
     }
 }

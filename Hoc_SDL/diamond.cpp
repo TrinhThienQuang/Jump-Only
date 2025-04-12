@@ -1,7 +1,7 @@
 ﻿#include "diamond.h"
 #include <SDL_image.h>
 
-// Định nghĩa biến toàn cục
+
 SDL_Texture* diamondTexture = nullptr;
 SDL_Texture* heartTexture = nullptr;
 Diamond diamonds[3];
@@ -9,7 +9,7 @@ int collectedDiamonds = 0;
 
 void initializeDiamonds() {
     collectedDiamonds = 0;
-    // Khởi tạo vị trí các kim cương
+    // Vị trí của kim cương
     diamonds[0] = { {SCREEN_WIDTH / 2 - 16, LEVEL_HEIGHT - SCREEN_HEIGHT + 50, 64, 64}, false };
     diamonds[1] = { {SCREEN_WIDTH / 4 - 50, LEVEL_HEIGHT - SCREEN_HEIGHT - 700, 64, 64}, false };
     diamonds[2] = { {SCREEN_WIDTH - SCREEN_WIDTH / 4 + 50, LEVEL_HEIGHT - SCREEN_HEIGHT - 1800, 64, 64}, false };
@@ -17,7 +17,7 @@ void initializeDiamonds() {
 
 void renderDiamonds() {
     for (int i = 0; i < 3; i++) {
-        if (!diamonds[i].isCollected) { // Chỉ vẽ kim cương chưa thu thập
+        if (!diamonds[i].isCollected) {
             SDL_Rect renderRect = {
                 diamonds[i].position.x,
                 diamonds[i].position.y - cameraY,

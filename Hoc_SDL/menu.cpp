@@ -5,24 +5,24 @@
 #include "pause.h"
 
 bool gameRunning = false;
-SDL_Rect startButton = { 290, 260, 220, 80 }; // Giữ nguyên vùng bấm Start
+SDL_Rect startButton = { 290, 260, 220, 80 }; 
 SDL_Rect quitButton = { 290, 600, 220, 80 };
 SDL_Rect levelButton = { 290, 370, 220, 80 };
 SDL_Rect optionsButton = { 290, 490, 220, 80 };
-SDL_Texture* menuBackground = nullptr; // Ảnh nền menu
-SDL_Texture* levelMenuBackground = nullptr; // Background for level selection menu
-SDL_Texture* optionsMenuBackground = nullptr; // Ảnh nền options
+SDL_Texture* menuBackground = nullptr; 
+SDL_Texture* levelMenuBackground = nullptr; 
+SDL_Texture* optionsMenuBackground = nullptr;
 
-// 🔹 Load ảnh nền menu
+//  Load ảnh nền menu
 void loadMenuAssets() {
     menuBackground = IMG_LoadTexture(renderer, "menu3.png");
     if (!menuBackground) {
         std::cout << "Failed to load menu background! Error: " << IMG_GetError() << std::endl;
     }
 }
-// 🔹 Load ảnh nền menu Level
+//  Load ảnh nền menu Level
 void loadLevelMenuAssets() {
-    levelMenuBackground = IMG_LoadTexture(renderer, "level.png"); // The image you uploaded for the level menu
+    levelMenuBackground = IMG_LoadTexture(renderer, "level.png"); 
     if (!levelMenuBackground) {
         std::cout << "Failed to load level menu background! Error: " << IMG_GetError() << std::endl;
     }
@@ -36,7 +36,7 @@ void loadOptionsMenuAssets() {
     }
 }
 
-// 🔹 Kiểm tra chuột click vào nút Start
+
 bool isInsideButton(int x, int y) {
     return (x >= startButton.x && x <= startButton.x + startButton.w &&
         y >= startButton.y && y <= startButton.y + startButton.h);
@@ -59,26 +59,22 @@ bool isOptionsButton(int x, int y) {
 
 
 void resetWindow() {
-    // 🔹 Đặt lại kích thước cửa sổ về 1400x800 khi vào game
     SDL_SetWindowSize(window, SCREEN_WIDTH, SCREEN_HEIGHT);
     SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
-    SDL_RenderPresent(renderer); // Cập nhật cửa sổ
+    SDL_RenderPresent(renderer); 
 }
 
-// 🔹 Hiển thị menu trong cửa sổ chung
+
 void showMenu() {
     SDL_SetWindowSize(window, 800, 800);
     SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
 
     loadMenuAssets();
-    gameRunning = false; // 🔹 Đặt lại gameRunning thành false khi quay lại menu
-
+    gameRunning = false; 
     bool inMenu = true;
     SDL_Event e;
+    Mix_HaltMusic();
 
-    Mix_HaltMusic(); // Dừng bất kỳ nhạc nào đang chạy
-
-    // 🔹 Chỉ phát nhạc nếu isMusicOn == true
     if (isMusicOn && menuMusic && Mix_PlayingMusic() == 0) {
         Mix_PlayMusic(menuMusic, -1);
     }
@@ -87,7 +83,7 @@ void showMenu() {
         while (SDL_PollEvent(&e)) {
             if (e.type == SDL_QUIT) exit(0);
             if (e.type == SDL_MOUSEBUTTONDOWN) {
-                if (isInsideButton(e.button.x, e.button.y)) { // Nhấn vào Play
+                if (isInsideButton(e.button.x, e.button.y)) { 
                     showLevelMenu();
                     inMenu = false;
                 }
@@ -95,11 +91,11 @@ void showMenu() {
                     SDL_Quit();
                     exit(0);
                 }
-                if (isLevelButton(e.button.x, e.button.y)) { // Nhấn vào Level
+                if (isLevelButton(e.button.x, e.button.y)) { 
                     showLevelMenu();
                     return;
                 }
-                if (isOptionsButton(e.button.x, e.button.y)) { // Nhấn vào "SETTINGS"
+                if (isOptionsButton(e.button.x, e.button.y)) {
                     showOptionsMenu();
                     return;
                 }
@@ -143,9 +139,7 @@ void showLevelMenu() {
                     y >= easyButton.y && y <= easyButton.y + easyButton.h) {
                     std::cout << "Easy Mode Selected! Starting game...\n";
                     restartGame();
-                    Mix_HaltMusic(); // Dừng nhạc menu
-
-                    // 🔹 Chỉ phát nhạc nếu isMusicOn == true
+                    Mix_HaltMusic(); 
                     if (isMusicOn) {
                         Mix_PlayMusic(backgroundMusic, -1);
                     }
@@ -158,9 +152,7 @@ void showLevelMenu() {
                     y >= normalButton.y && y <= normalButton.y + normalButton.h) {
                     std::cout << "Normal Mode Selected! Starting game...\n";
                     restartGame();
-                    Mix_HaltMusic(); // Dừng nhạc menu
-
-                    // 🔹 Chỉ phát nhạc nếu isMusicOn == true
+                    Mix_HaltMusic(); 
                     if (isMusicOn) {
                         Mix_PlayMusic(backgroundMusic, -1);
                     }
@@ -173,9 +165,7 @@ void showLevelMenu() {
                     y >= hardButton.y && y <= hardButton.y + hardButton.h) {
                     std::cout << "Hard Mode Selected! Starting game...\n";
                     restartGame();
-                    Mix_HaltMusic(); // Dừng nhạc menu
-
-                    // 🔹 Chỉ phát nhạc nếu isMusicOn == true
+                    Mix_HaltMusic(); 
                     if (isMusicOn) {
                         Mix_PlayMusic(backgroundMusic, -1);
                     }
@@ -191,21 +181,16 @@ void showLevelMenu() {
         SDL_RenderClear(renderer);
         if (levelMenuBackground) SDL_RenderCopy(renderer, levelMenuBackground, NULL, NULL);
         SDL_RenderPresent(renderer);
-
-        if (!inLevelMenu) break; // Nếu chọn màn chơi, thoát menu
+        if (!inLevelMenu) break; 
     }
-
-    // Khi chọn xong level, thoát menu và vào game
     gameRunning = true;
 }
 
 
 
 void showOptionsMenu() {
-    // 🔹 Đặt cửa sổ menu settings thành 800x800
-    SDL_SetWindowSize(window, 800, 800);
+    SDL_SetWindowSize(window, 800, 800); // đặt lại cửa sổ thành 800x800
     SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
-
     loadOptionsMenuAssets(); // Load ảnh nền trước khi hiển thị
 
     bool inOptionsMenu = true;
@@ -217,18 +202,18 @@ void showOptionsMenu() {
     while (inOptionsMenu) {
         while (SDL_PollEvent(&e)) {
             if (e.type == SDL_QUIT) exit(0);
-            if (e.type == SDL_MOUSEBUTTONDOWN) { // Nếu bấm chuột
+            if (e.type == SDL_MOUSEBUTTONDOWN) { 
                 int x = e.button.x, y = e.button.y;
                 std::cout << x << ' ' << y << std::endl;
                 if (x >= musicButton.x && x <= musicButton.x + musicButton.w &&
                     y >= musicButton.y && y <= musicButton.y + musicButton.h) {
-                    isMusicOn = !isMusicOn; // 🔄 Đảo trạng thái nhạc
+                    isMusicOn = !isMusicOn; // đảo trạng thái nhạc
                     if (isMusicOn) {
-                        // 🔹 Nếu đang ở menu, phát nhạc menu
+                        //  Nếu đang ở menu, phát nhạc menu
                         if (!gameRunning) {
                             Mix_PlayMusic(menuMusic, -1);
                         }
-                        // 🔹 Nếu đang trong game, phát nhạc game
+                        //  Nếu đang trong game, phát nhạc game
                         else {
                             Mix_PlayMusic(backgroundMusic, -1);
                         }
@@ -251,8 +236,6 @@ void showOptionsMenu() {
 
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
-
-        // 🔹 Hiển thị ảnh nền menu settings
         if (optionsMenuBackground) {
             SDL_RenderCopy(renderer, optionsMenuBackground, NULL, NULL);
         }
@@ -262,11 +245,7 @@ void showOptionsMenu() {
 
         SDL_RenderPresent(renderer);
     }
-
-    // 🔹 Quay lại menu chính
     showMenu();
-
-    // 🔹 Giải phóng tài nguyên
     SDL_DestroyTexture(optionsMenuBackground);
     optionsMenuBackground = nullptr;
 }

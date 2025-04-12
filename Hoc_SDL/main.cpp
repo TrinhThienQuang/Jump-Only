@@ -10,7 +10,6 @@ int main(int argc, char* argv[]) {
         SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
         gameLoop();
     }
-
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
