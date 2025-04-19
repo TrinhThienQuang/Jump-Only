@@ -5,13 +5,16 @@
 #include "pause.h"
 
 bool gameRunning = false;
-SDL_Rect startButton = { 290, 260, 220, 80 }; 
+SDL_Rect startButton = { 290, 260, 220, 80 };
 SDL_Rect quitButton = { 290, 600, 220, 80 };
 SDL_Rect levelButton = { 290, 370, 220, 80 };
 SDL_Rect optionsButton = { 290, 490, 220, 80 };
-SDL_Texture* menuBackground = nullptr; 
-SDL_Texture* levelMenuBackground = nullptr; 
-SDL_Texture* optionsMenuBackground = nullptr;
+SDL_Texture* menuBackground = nullptr;
+SDL_Texture* levelMenuBackground = nullptr;
+SDL_Texture* musicOffTexture = IMG_LoadTexture(renderer, "music_off.png");
+SDL_Texture* musicOnTexture = IMG_LoadTexture(renderer, "music_on.png");
+SDL_Texture* soundOffTexture = IMG_LoadTexture(renderer, "soundoff.png");
+SDL_Texture* optionsOffTexture = IMG_LoadTexture(renderer, "sound1.png");
 
 //  Load ảnh nền menu
 void loadMenuAssets() {
@@ -22,7 +25,7 @@ void loadMenuAssets() {
 }
 //  Load ảnh nền menu Level
 void loadLevelMenuAssets() {
-    levelMenuBackground = IMG_LoadTexture(renderer, "level.png"); 
+    levelMenuBackground = IMG_LoadTexture(renderer, "level.png");
     if (!levelMenuBackground) {
         std::cout << "Failed to load level menu background! Error: " << IMG_GetError() << std::endl;
     }
@@ -30,11 +33,16 @@ void loadLevelMenuAssets() {
 
 // Load ảnh nền setting
 void loadOptionsMenuAssets() {
-    optionsMenuBackground = IMG_LoadTexture(renderer, "option.png");
-    if (!optionsMenuBackground) {
-        std::cout << "Failed to load options menu background! Error: " << IMG_GetError() << std::endl;
+    musicOffTexture = IMG_LoadTexture(renderer, "musicoff.png");
+    musicOnTexture = IMG_LoadTexture(renderer, "musicon.png"); 
+    soundOffTexture = IMG_LoadTexture(renderer, "soundOff.png");
+    optionsOffTexture = IMG_LoadTexture(renderer, "sound1.png");
+
+    if (!musicOffTexture || !musicOnTexture) {
+        std::cout << "Failed to load options assets! Error: " << IMG_GetError() << std::endl;
     }
 }
+
 
 
 bool isInsideButton(int x, int y) {
@@ -61,7 +69,7 @@ bool isOptionsButton(int x, int y) {
 void resetWindow() {
     SDL_SetWindowSize(window, SCREEN_WIDTH, SCREEN_HEIGHT);
     SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
-    SDL_RenderPresent(renderer); 
+    SDL_RenderPresent(renderer);
 }
 
 
@@ -70,7 +78,7 @@ void showMenu() {
     SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
 
     loadMenuAssets();
-    gameRunning = false; 
+    gameRunning = false;
     bool inMenu = true;
     SDL_Event e;
     Mix_HaltMusic();
@@ -83,7 +91,7 @@ void showMenu() {
         while (SDL_PollEvent(&e)) {
             if (e.type == SDL_QUIT) exit(0);
             if (e.type == SDL_MOUSEBUTTONDOWN) {
-                if (isInsideButton(e.button.x, e.button.y)) { 
+                if (isInsideButton(e.button.x, e.button.y)) {
                     showLevelMenu();
                     inMenu = false;
                 }
@@ -91,7 +99,7 @@ void showMenu() {
                     SDL_Quit();
                     exit(0);
                 }
-                if (isLevelButton(e.button.x, e.button.y)) { 
+                if (isLevelButton(e.button.x, e.button.y)) {
                     showLevelMenu();
                     return;
                 }
@@ -117,6 +125,8 @@ void showMenu() {
 }
 
 
+
+
 void showLevelMenu() {
     SDL_SetWindowSize(window, 800, 800);
     SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
@@ -139,25 +149,27 @@ void showLevelMenu() {
                     y >= easyButton.y && y <= easyButton.y + easyButton.h) {
                     std::cout << "Easy Mode Selected! Starting game...\n";
                     restartGame();
-                    Mix_HaltMusic(); 
+                    Mix_HaltMusic();
                     if (isMusicOn) {
                         Mix_PlayMusic(backgroundMusic, -1);
                     }
 
                     resetWindow();
                     gameState = LEVEL_1;
+                    setupLevel1();
                     inLevelMenu = false;
                 }
                 if (x >= normalButton.x && x <= normalButton.x + normalButton.w &&
                     y >= normalButton.y && y <= normalButton.y + normalButton.h) {
                     std::cout << "Normal Mode Selected! Starting game...\n";
                     restartGame();
-                    Mix_HaltMusic(); 
+                    Mix_HaltMusic();
                     if (isMusicOn) {
                         Mix_PlayMusic(backgroundMusic, -1);
                     }
 
                     gameState = LEVEL_2;
+                    setupLevel2();
                     resetWindow();
                     inLevelMenu = false;
                 }
@@ -165,12 +177,13 @@ void showLevelMenu() {
                     y >= hardButton.y && y <= hardButton.y + hardButton.h) {
                     std::cout << "Hard Mode Selected! Starting game...\n";
                     restartGame();
-                    Mix_HaltMusic(); 
+                    Mix_HaltMusic();
                     if (isMusicOn) {
                         Mix_PlayMusic(backgroundMusic, -1);
                     }
 
                     gameState = LEVEL_3;
+                    setupLevel3();
                     resetWindow();
                     inLevelMenu = false;
                 }
@@ -181,7 +194,7 @@ void showLevelMenu() {
         SDL_RenderClear(renderer);
         if (levelMenuBackground) SDL_RenderCopy(renderer, levelMenuBackground, NULL, NULL);
         SDL_RenderPresent(renderer);
-        if (!inLevelMenu) break; 
+        if (!inLevelMenu) break;
     }
     gameRunning = true;
 }
@@ -202,9 +215,8 @@ void showOptionsMenu() {
     while (inOptionsMenu) {
         while (SDL_PollEvent(&e)) {
             if (e.type == SDL_QUIT) exit(0);
-            if (e.type == SDL_MOUSEBUTTONDOWN) { 
+            if (e.type == SDL_MOUSEBUTTONDOWN) {
                 int x = e.button.x, y = e.button.y;
-                std::cout << x << ' ' << y << std::endl;
                 if (x >= musicButton.x && x <= musicButton.x + musicButton.w &&
                     y >= musicButton.y && y <= musicButton.y + musicButton.h) {
                     isMusicOn = !isMusicOn; // đảo trạng thái nhạc
@@ -224,7 +236,7 @@ void showOptionsMenu() {
                 }
                 else if (x >= soundButton.x && x <= soundButton.x + soundButton.w &&
                     y >= soundButton.y && y <= soundButton.y + soundButton.h) {
-                    // bật tắt sound
+                    isSound = !isSound;
                 }
                 else if (x >= quitButton.x && x <= quitButton.x + quitButton.w &&
                     y >= quitButton.y && y <= quitButton.y + quitButton.h) {
@@ -236,18 +248,29 @@ void showOptionsMenu() {
 
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
-        if (optionsMenuBackground) {
-            SDL_RenderCopy(renderer, optionsMenuBackground, NULL, NULL);
+        if (isMusicOn && isSound && musicOnTexture) {
+            SDL_RenderCopy(renderer, musicOnTexture, NULL, NULL);
+        }
+        else if (!isMusicOn && isSound && musicOffTexture) {
+            SDL_RenderCopy(renderer, musicOffTexture, NULL, NULL);
+        }
+        else if (isMusicOn && !isSound && soundOffTexture) {
+            SDL_RenderCopy(renderer, soundOffTexture, NULL, NULL);
+        }
+        else if (!isMusicOn && !isSound && optionsOffTexture) {
+            SDL_RenderCopy(renderer, optionsOffTexture, NULL, NULL);
         }
         else {
             std::cout << "Options menu background not loaded!" << std::endl;
         }
 
+
         SDL_RenderPresent(renderer);
     }
     showMenu();
-    SDL_DestroyTexture(optionsMenuBackground);
-    optionsMenuBackground = nullptr;
+    SDL_DestroyTexture(musicOnTexture);
+    SDL_DestroyTexture(musicOffTexture);
+    musicOnTexture = nullptr;
+    musicOffTexture = nullptr;
+
 }
-
-

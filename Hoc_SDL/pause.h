@@ -8,6 +8,7 @@ extern bool isGameOver;
 extern bool isOptionsScreen;
 extern bool isLevelComplete;
 extern bool isMusicOn;
+extern bool isSound;
 
 
 void handlePauseEvent(SDL_Event& event);

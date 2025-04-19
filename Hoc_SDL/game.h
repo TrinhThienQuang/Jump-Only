@@ -20,7 +20,7 @@ extern GameState gameState;
 
 const int SCREEN_WIDTH = 1400;
 const int SCREEN_HEIGHT = 800;
-const int LEVEL_HEIGHT = 6500;
+const int LEVEL_HEIGHT = 7000;
 
 
 extern SDL_Window* window;
@@ -33,6 +33,8 @@ extern int cameraY;
 extern int lives;
 extern Mix_Music* backgroundMusic;
 extern Mix_Music* menuMusic;
+extern Mix_Chunk* moveSound;
+extern Mix_Chunk* explosionSound;
 
 bool init();
 void renderBackground();

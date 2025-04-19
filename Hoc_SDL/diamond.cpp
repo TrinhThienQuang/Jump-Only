@@ -10,9 +10,21 @@ int collectedDiamonds = 0;
 void initializeDiamonds() {
     collectedDiamonds = 0;
     // Vị trí của kim cương
-    diamonds[0] = { {SCREEN_WIDTH / 2 - 16, LEVEL_HEIGHT - SCREEN_HEIGHT + 50, 64, 64}, false };
-    diamonds[1] = { {SCREEN_WIDTH / 4 - 50, LEVEL_HEIGHT - SCREEN_HEIGHT - 700, 64, 64}, false };
-    diamonds[2] = { {SCREEN_WIDTH - SCREEN_WIDTH / 4 + 50, LEVEL_HEIGHT - SCREEN_HEIGHT - 1800, 64, 64}, false };
+    if (gameState == LEVEL_1) {
+        diamonds[0] = { {670, 6200, 64, 64}, false };
+        diamonds[1] = { {1100, 4300, 64, 64}, false };
+        diamonds[2] = { {1300, 900, 64, 64}, false };
+    }
+    else if (gameState == LEVEL_2) {
+        diamonds[0] = { {670, 5900, 64, 64}, false };
+        diamonds[1] = { {200, 3350, 64, 64}, false };
+        diamonds[2] = { {1300, 1180, 64, 64}, false };
+    }
+    else if (gameState == LEVEL_3) {
+        diamonds[0] = { {670, 6150, 64, 64}, false };
+        diamonds[1] = { {50, 4200, 64, 64}, false };
+        diamonds[2] = { {1300, 1100, 64, 64}, false };
+    }
 }
 
 void renderDiamonds() {

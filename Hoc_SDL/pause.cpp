@@ -9,6 +9,7 @@ bool isOptionsScreen = false;
 bool isGameOver = false;
 bool isLevelComplete = false;
 bool isMusicOn = true; 
+bool isSound = true;
 SDL_Texture* previousFrameTexture = nullptr;
 
 void handlePauseEvent(SDL_Event& event) {
@@ -75,7 +76,7 @@ void handlePauseEvent(SDL_Event& event) {
         }
         else if (mouseX >= soundButton.x && mouseX <= soundButton.x + soundButton.w &&
             mouseY >= soundButton.y && mouseY <= soundButton.y + soundButton.h) {
-            // TODO: Tắt / bật âm thanh
+            isSound = !isSound;
         }
         else if ((mouseX >= backButton.x && mouseX <= backButton.x + backButton.w &&
             mouseY >= backButton.y && mouseY <= backButton.y + backButton.h) ||
@@ -216,6 +217,9 @@ void renderLevelCompleteScreen() {
         }
         else if (collectedDiamonds == 3) {
             starImage = "star3.png";
+        }
+        else if (collectedDiamonds == 0) {
+            starImage = "star0.png";
         }
 
         // Tải ảnh sao tương ứng

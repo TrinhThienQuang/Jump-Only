@@ -3,6 +3,7 @@
 #include <vector>
 #include "diamond.h"
 #include "pause.h"
+#include "game.h"
 
 Player player;
 SDL_Texture* playerTexture = nullptr;
@@ -17,13 +18,26 @@ void handleInput(SDL_Event& event) {
         if (event.key.keysym.sym == SDLK_LEFT) {
             player.dy = JUMP_FORCE;
             player.dx = -MOVE_SPEED;
+            if (isSound) {
+                Mix_PlayChannel(-1, moveSound, 0);
+            }
+            else {
+                Mix_HaltChannel(-1);
+            }
         }
         else if (event.key.keysym.sym == SDLK_RIGHT) {
             player.dy = JUMP_FORCE;
             player.dx = MOVE_SPEED;
+            if (isSound) {
+                Mix_PlayChannel(-1, moveSound, 0);
+            }
+            else {
+                Mix_HaltChannel(-1);
+            }
         }
     }
 }
+
 
 // Thêm vụ nổ vào danh sách
 void addExplosion(float x, float y) {
@@ -40,7 +54,6 @@ void updateExplosions() {
             }
         }
     }
-
     // Xóa vụ nổ 
     explosions.erase(std::remove_if(explosions.begin(), explosions.end(),
         [](const Explosion& e) { return !e.active; }), explosions.end());

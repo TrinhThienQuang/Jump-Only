@@ -20,6 +20,8 @@ SDL_Rect playerRect = { 0, 0, PLAYER_WIDTH, PLAYER_HEIGHT };
 GameState gameState = MENU;
 Mix_Music* backgroundMusic = nullptr;
 Mix_Music* menuMusic = nullptr;
+Mix_Chunk* moveSound = nullptr;
+Mix_Chunk* explosionSound = nullptr;
 
 
 bool init() {
@@ -43,7 +45,9 @@ bool init() {
     // Tải nhạc nền
     backgroundMusic = Mix_LoadMUS("music.mp3");
     menuMusic = Mix_LoadMUS("menumusic.mp3");
-    if (!backgroundMusic || !menuMusic) {
+    moveSound = Mix_LoadWAV("sound3.wav");
+    explosionSound = Mix_LoadWAV("sound4.wav");
+    if (!backgroundMusic || !menuMusic || !moveSound) {
         std::cout << "Failed to load music! Error: " << Mix_GetError() << std::endl;
         return false;
     }
@@ -203,6 +207,11 @@ void restartGame() {
     if (isMusicOn && backgroundMusic) {
         Mix_PlayMusic(backgroundMusic, -1);
     }
+    Mix_HaltChannel(-1);
+    if (isSound) {
+        Mix_PlayChannel(-1, moveSound, 0);
+        Mix_PlayChannel(-1, explosionSound, 0);
+    }
 
     isPaused = false;
 }
@@ -211,6 +220,12 @@ void restartGame() {
 void gameOver() {
     if (lives > 1) {
         lives--;
+        if (isSound) {
+            Mix_PlayChannel(-1, explosionSound, 0);
+        }
+        else {
+            Mix_HaltChannel(-1);
+        }
         restartGame();
     }
     else {
