@@ -71,43 +71,26 @@ Game được lấy cảm hứng từ “Jump Only” và “Geometry Dash”. N
 
 ## Cấu trúc mã nguồn
 
-- 📦 Hoc_SDL
-   - 📂 Header Files (.h) – Khai báo biến & hàm dùng chung
-     
-       📄 diamond.h – Biến & các hàm xử lý vật phẩm trong game.
-     
-       📄 game.h – Biến toàn cục: màn chơi, camera, nhạc nền, renderer...
-     
-       📄 level.h – Biến, thông số vật cản và hàm xử lý chung cho các level
-     
-       📄 menu.h – Biến và hàm xử lý menu & nút bấm giao diện chính
-     
-       📄 pause.h – Biến và hàm xử lý trạng thái dừng game
-     
-       📄 player.h – Biến và hàm xử lý nhân vật chính
-     
-   - 📂 Source Files (.cpp) – Chứa toàn bộ logic game
-     
-       📄 diamond.cpp – Quản lý vị trí vật phẩm trong game
-     
-       📄 game.cpp – Hàm chính điều khiển game: vòng lặp, khởi tạo, render
-     
-       📄 level1.cpp – Xây dựng màn chơi 1
-     
-       📄 level2.cpp – Xây dựng màn chơi 2
-     
-       📄 level3.cpp – Xây dựng màn chơi 3
-     
-       📄 main.cpp – Điểm bắt đầu chương trình
-     
-       📄 menu.cpp – Xây dựng tính năng menu
-     
-       📄 pause.cpp – Xây dựng tính năng dừng game
-     
-       📄 player.cpp – Điều khiển nhảy, xử lý chuyển động nhân vật
+📄 diamond.h / diamond.cpp – Quản lý vị trí vật phẩm trong game
+
+📄 game.h / game.cpp – Hàm chính điều khiển game: vòng lặp, khởi tạo, render
+         
+📄 level.h / level1.cpp – Xây dựng màn chơi 1
+
+📄 level.h / level2.cpp – Xây dựng màn chơi 2
+
+📄 level.h / level3.cpp – Xây dựng màn chơi 3
+
+📄 main.cpp – Điểm bắt đầu chương trình
+
+📄 menu.h / menu.cpp – Xây dựng tính năng menu
+
+📄 pause.h / pause.cpp – Xây dựng tính năng dừng game
+
+📄 player.h / player.cpp – Điều khiển nhảy, xử lý chuyển động nhân vật
      
 
 ## Tổng kết
 
 Jump Only là một tựa game platformer nhanh và thú vị giúp bạn thư giãn sau giờ học/làm việc. Rèn luyện phản xạ, tính toán điểm rơi và… đôi chút may mắn 😄
-Nếu bạn đã phá đảo cả 3 màn – xin chúc mừng: bạn là cao thủ phản xạ đích thực!!! 🔥🔥🔥
+Nếu bạn đã phá đảo cả 3 màn – xin chúc mừng: bạn là cao thủ phản xạ đích thực 🔥🔥🔥
