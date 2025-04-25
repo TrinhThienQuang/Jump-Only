@@ -11,21 +11,21 @@ SDL_Rect levelButton = { 290, 370, 220, 80 };
 SDL_Rect optionsButton = { 290, 490, 220, 80 };
 SDL_Texture* menuBackground = nullptr;
 SDL_Texture* levelMenuBackground = nullptr;
-SDL_Texture* musicOffTexture = IMG_LoadTexture(renderer, "music_off.png");
-SDL_Texture* musicOnTexture = IMG_LoadTexture(renderer, "music_on.png");
-SDL_Texture* soundOffTexture = IMG_LoadTexture(renderer, "soundoff.png");
-SDL_Texture* optionsOffTexture = IMG_LoadTexture(renderer, "sound1.png");
+SDL_Texture* musicOffTexture = nullptr;
+SDL_Texture* musicOnTexture = nullptr;
+SDL_Texture* soundOffTexture = nullptr;
+SDL_Texture* optionsOffTexture = nullptr;
 
 //  Load ảnh nền menu
 void loadMenuAssets() {
-    menuBackground = IMG_LoadTexture(renderer, "menu3.png");
+    menuBackground = IMG_LoadTexture(renderer, "image/menu3.png");
     if (!menuBackground) {
         std::cout << "Failed to load menu background! Error: " << IMG_GetError() << std::endl;
     }
 }
 //  Load ảnh nền menu Level
 void loadLevelMenuAssets() {
-    levelMenuBackground = IMG_LoadTexture(renderer, "level.png");
+    levelMenuBackground = IMG_LoadTexture(renderer, "image/level.png");
     if (!levelMenuBackground) {
         std::cout << "Failed to load level menu background! Error: " << IMG_GetError() << std::endl;
     }
@@ -33,10 +33,10 @@ void loadLevelMenuAssets() {
 
 // Load ảnh nền setting
 void loadOptionsMenuAssets() {
-    musicOffTexture = IMG_LoadTexture(renderer, "musicoff.png");
-    musicOnTexture = IMG_LoadTexture(renderer, "musicon.png"); 
-    soundOffTexture = IMG_LoadTexture(renderer, "soundOff.png");
-    optionsOffTexture = IMG_LoadTexture(renderer, "sound1.png");
+    musicOffTexture = IMG_LoadTexture(renderer, "image/musicoff.png");
+    musicOnTexture = IMG_LoadTexture(renderer, "image/musicon.png"); 
+    soundOffTexture = IMG_LoadTexture(renderer, "image/soundOff.png");
+    optionsOffTexture = IMG_LoadTexture(renderer, "image/sound1.png");
 
     if (!musicOffTexture || !musicOnTexture) {
         std::cout << "Failed to load options assets! Error: " << IMG_GetError() << std::endl;

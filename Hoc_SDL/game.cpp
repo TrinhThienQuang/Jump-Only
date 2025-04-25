@@ -43,17 +43,17 @@ bool init() {
     }
 
     // Tải nhạc nền
-    backgroundMusic = Mix_LoadMUS("music.mp3");
-    menuMusic = Mix_LoadMUS("menumusic.mp3");
-    moveSound = Mix_LoadWAV("sound3.wav");
-    explosionSound = Mix_LoadWAV("sound4.wav");
+    backgroundMusic = Mix_LoadMUS("sound/music.mp3");
+    menuMusic = Mix_LoadMUS("sound/menumusic.mp3");
+    moveSound = Mix_LoadWAV("sound/sound3.wav");
+    explosionSound = Mix_LoadWAV("sound/sound4.wav");
     if (!backgroundMusic || !menuMusic || !moveSound) {
         std::cout << "Failed to load music! Error: " << Mix_GetError() << std::endl;
         return false;
     }
 
     // Tải background
-    SDL_Surface* bgSurface = IMG_Load("background.jpg");
+    SDL_Surface* bgSurface = IMG_Load("image/background.jpg");
     if (!bgSurface) {
         std::cout << "Failed to load background image! Error: " << IMG_GetError() << std::endl;
         return false;
@@ -63,7 +63,7 @@ bool init() {
     if (!backgroundTexture) return false;
 
     // Tải nhân vật
-    SDL_Surface* playerSurface = IMG_Load("character.png");
+    SDL_Surface* playerSurface = IMG_Load("image/character.png");
     if (!playerSurface) {
         std::cout << "Failed to load player image! Error: " << IMG_GetError() << std::endl;
         return false;
@@ -76,20 +76,20 @@ bool init() {
         return false;
     }
     // Tải hình ảnh gai
-    spikeTexture = IMG_LoadTexture(renderer, "spike1.png");
+    spikeTexture = IMG_LoadTexture(renderer, "image/spike1.png");
     if (!spikeTexture) {
         std::cout << "Failed to load spikes image! Error: " << IMG_GetError() << std::endl;
         return false;
     }
 
     // Tải ảnh tường
-    wallTexture = IMG_LoadTexture(renderer, "wall.jpg");
+    wallTexture = IMG_LoadTexture(renderer, "image/wall.jpg");
     if (!wallTexture) {
         std::cout << "Failed to load wall image! Error: " << IMG_GetError() << std::endl;
         return false;
     }
     // Tải vật cản
-    SDL_Surface* gearSurface = IMG_Load("obstacle.png");
+    SDL_Surface* gearSurface = IMG_Load("image/obstacle.png");
     if (!gearSurface) {
         std::cout << "Failed to load gear image! Error: " << IMG_GetError() << std::endl;
         return false;
@@ -101,7 +101,7 @@ bool init() {
         return false;
     }
     // tải vật cản co giãn
-    SDL_Texture* commonObstacleTexture = IMG_LoadTexture(renderer, "gear.png");
+    SDL_Texture* commonObstacleTexture = IMG_LoadTexture(renderer, "image/gear.png");
     if (!commonObstacleTexture) {
         std::cout << "Failed to load common obstacle image! Error: " << IMG_GetError() << std::endl;
         return false;
@@ -111,19 +111,19 @@ bool init() {
     }
 
     // tải hiệu ứng nổ
-    explosionTexture = IMG_LoadTexture(renderer, "no.png");
+    explosionTexture = IMG_LoadTexture(renderer, "image/no.png");
     if (!explosionTexture) {
         printf("Failed to load explosion texture: %s\n", SDL_GetError());
     }
 
     // tải ảnh kim cương
-    diamondTexture = IMG_LoadTexture(renderer, "diamond.png");
+    diamondTexture = IMG_LoadTexture(renderer, "image/diamond.png");
     if (!diamondTexture) {
         printf("Failed to load diamond texture : %s\n", SDL_GetError());
     }
     
     // vẽ trái tim
-    heartTexture = IMG_LoadTexture(renderer, "heart.png");
+    heartTexture = IMG_LoadTexture(renderer, "image/heart.png");
     if (!heartTexture) {
         printf("Failed to load heart image: %s\n", SDL_GetError());
     }

@@ -14,6 +14,8 @@ std::vector<Explosion> explosions;
 
 
 void handleInput(SDL_Event& event) {
+    if (isGameOver) return;
+
     if (event.type == SDL_KEYDOWN) {
         if (event.key.keysym.sym == SDLK_LEFT) {
             player.dy = JUMP_FORCE;

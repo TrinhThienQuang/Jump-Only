@@ -143,7 +143,7 @@ void renderGameOverScreen() {
         SDL_Rect overlay = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
         SDL_RenderFillRect(renderer, &overlay);
 
-        SDL_Surface* gameOverSurface = IMG_Load("gameover.png");
+        SDL_Surface* gameOverSurface = IMG_Load("image/gameover.png");
         if (gameOverSurface) {
             SDL_Texture* gameOverTexture = SDL_CreateTextureFromSurface(renderer, gameOverSurface);
             SDL_Rect gameOverRect = { (SCREEN_WIDTH - 500) / 2, (SCREEN_HEIGHT - 500) / 2, 500, 500 };
@@ -167,7 +167,7 @@ void renderPauseScreen() {
         SDL_Rect overlay = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
         SDL_RenderFillRect(renderer, &overlay);
 
-        SDL_Surface* pauseSurface = IMG_Load("pause3.png");
+        SDL_Surface* pauseSurface = IMG_Load("image/pause3.png");
         if (pauseSurface) {
             SDL_Texture* pauseTexture = SDL_CreateTextureFromSurface(renderer, pauseSurface);
             SDL_Rect pauseRect = { (SCREEN_WIDTH - 500) / 2, (SCREEN_HEIGHT - 500) / 2, 500, 500 };
@@ -190,7 +190,7 @@ void renderOptionsScreen() {
         SDL_Rect overlay = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
         SDL_RenderFillRect(renderer, &overlay);
 
-        SDL_Surface* optionsSurface = IMG_Load("option4.png");
+        SDL_Surface* optionsSurface = IMG_Load("image/option4.png");
         if (optionsSurface) {
             SDL_Texture* optionsTexture = SDL_CreateTextureFromSurface(renderer, optionsSurface);
             SDL_Rect optionsRect = { (SCREEN_WIDTH - 500) / 2, (SCREEN_HEIGHT - 500) / 2, 500, 500 };
@@ -208,18 +208,18 @@ void renderLevelCompleteScreen() {
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 150);
         SDL_Rect overlay = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
         SDL_RenderFillRect(renderer, &overlay);
-        const char* starImage = "stars_0.png";
+        const char* starImage = "image/stars_0.png";
         if (collectedDiamonds == 1) {
-            starImage = "star1.png";
+            starImage = "image/star1.png";
         }
         else if (collectedDiamonds == 2) {
-            starImage = "star2.png";
+            starImage = "image/star2.png";
         }
         else if (collectedDiamonds == 3) {
-            starImage = "star3.png";
+            starImage = "image/star3.png";
         }
         else if (collectedDiamonds == 0) {
-            starImage = "star0.png";
+            starImage = "image/star0.png";
         }
 
         // Tải ảnh sao tương ứng
