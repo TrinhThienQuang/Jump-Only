@@ -4,17 +4,18 @@
 
 Video giải thích về code và hướng dẫn chơi :
 
+
+
 ## Mục lục
 
 1. [Giới thiệu](#giới-thiệu)
 2. [Các màn chơi](#các-màn-chơi)
-3. [Bắt đầu chơi](#bắt-đầu-chơi)
-4. [Thành phần trong game](#thành-phần-trong-game)
-5. [Cách chơi](#cách-chơi)
-6. [Đồ họa & Âm thanh](#đồ-họa--âm-thanh)
-7. [Mẹo](#mẹo)
-8. [Cấu trúc mã nguồn](#cấu-trúc-mã-nguồn)
-9. [Tổng kết](#tổng-kết)
+3. [Thành phần trong game](#thành-phần-trong-game)
+4. [Cách chơi](#cách-chơi)
+5. [Đồ họa & Âm thanh](#đồ-họa--âm-thanh)
+6. [Mẹo](#mẹo)
+7. [Cấu trúc mã nguồn](#cấu-trúc-mã-nguồn)
+8. [Tổng kết](#tổng-kết)
 
 ## Giới thiệu
 
@@ -30,11 +31,6 @@ Game được lấy cảm hứng từ “Jump Only” và “Geometry Dash”. N
     - Màn 2: tương tự màn 1 nhưng vật cản nhiều hơn
     - Màn 3: độ khó rất cao, yêu cầu phản xạ và kỹ năng né đỉnh cao
 
-## Bắt đầu chơi
-
-- Mở game → Chọn Play
-- Chọn Level
-- Vào game và tận hưởng
 
 ## Thành phần trong game
 
@@ -50,13 +46,6 @@ Game được lấy cảm hứng từ “Jump Only” và “Geometry Dash”. N
 - Vật phẩm:
    - Kim cương ![image](https://github.com/user-attachments/assets/1318fd3b-daba-469a-b245-de75efddfddc)
    - Mạng sống ![image](https://github.com/user-attachments/assets/73b95ccd-395b-41ae-9a3e-dcbbaab5805a)
-
-   - Nhấn ESC để mở Pause menu
-   ![image](https://github.com/user-attachments/assets/a919d000-7d8b-463e-b195-8ed74afb173d)
-   - Nhấn “Play” để tiếp tục
-   - Nhấn “Restart” để chơi lại màn đó
-   - Nhấn “Options” để chỉnh âm thanh
-   - Nhấn “Quit” để về menu chính
 
 ## Cách chơi
 
@@ -84,22 +73,39 @@ Game được lấy cảm hứng từ “Jump Only” và “Geometry Dash”. N
 
 - 📦 Hoc_SDL
    - 📂 Header Files (.h) – Khai báo biến & hàm dùng chung
+     
        📄 diamond.h – Biến & các hàm xử lý vật phẩm trong game.
+     
        📄 game.h – Biến toàn cục: màn chơi, camera, nhạc nền, renderer...
+     
        📄 level.h – Biến, thông số vật cản và hàm xử lý chung cho các level
+     
        📄 menu.h – Biến và hàm xử lý menu & nút bấm giao diện chính
+     
        📄 pause.h – Biến và hàm xử lý trạng thái dừng game
+     
        📄 player.h – Biến và hàm xử lý nhân vật chính
+     
    - 📂 Source Files (.cpp) – Chứa toàn bộ logic game
+     
        📄 diamond.cpp – Quản lý vị trí vật phẩm trong game
+     
        📄 game.cpp – Hàm chính điều khiển game: vòng lặp, khởi tạo, render
+     
        📄 level1.cpp – Xây dựng màn chơi 1
+     
        📄 level2.cpp – Xây dựng màn chơi 2
+     
        📄 level3.cpp – Xây dựng màn chơi 3
+     
        📄 main.cpp – Điểm bắt đầu chương trình
+     
        📄 menu.cpp – Xây dựng tính năng menu
+     
        📄 pause.cpp – Xây dựng tính năng dừng game
+     
        📄 player.cpp – Điều khiển nhảy, xử lý chuyển động nhân vật
+     
 
 ## Tổng kết
 
