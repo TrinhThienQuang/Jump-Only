@@ -41,7 +41,6 @@ void renderDiamonds() {
     }
 }
 
-
 void checkDiamondCollision(const SDL_Rect& player) {
     for (int i = 0; i < 3; i++) {
         if (!diamonds[i].isCollected && SDL_HasIntersection(&player, &diamonds[i].position)) {

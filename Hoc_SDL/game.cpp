@@ -131,7 +131,6 @@ bool init() {
     return true;
 }
 
-
 void renderBackground() {
     int img_width, img_height;
     SDL_QueryTexture(backgroundTexture, NULL, NULL, &img_width, &img_height);
@@ -143,7 +142,6 @@ void renderBackground() {
         }
     }
 }
-
 
 void rendertileMap(int level) {
     const int (*tileMap)[MAP_WIDTH];
@@ -216,7 +214,6 @@ void restartGame() {
     isPaused = false;
 }
 
-
 void gameOver() {
     if (lives > 1) {
         lives--;
@@ -233,8 +230,6 @@ void gameOver() {
         lives = 4;
     }
 }
-
-
 
 void gameLoop() {
     bool running = true;

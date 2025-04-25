@@ -123,7 +123,6 @@ void handlePauseEvent(SDL_Event& event) {
 }
 
 
-
 void captureCurrentFrame() {
     if (previousFrameTexture) {
         SDL_DestroyTexture(previousFrameTexture);

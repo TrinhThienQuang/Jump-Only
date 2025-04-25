@@ -6,6 +6,8 @@
 std::vector<Obstacle> obstacles(100);
 SDL_Texture* customObstacleTextures[4] = { nullptr }; 
 std::vector<float> gearAngle(100, 0.0f);
+
+
 void initLevel1() {
     gearAngle.resize(9, 0.0f);  
     obstacles.clear(); 
@@ -26,7 +28,6 @@ void renderLevel1() {
         }
     }
 }
-
 
 
 void updateMovingLevel1() {
@@ -122,22 +123,19 @@ bool checkCollisionLevel1() {
     int top = player.y;
     int bottom = player.y + PLAYER_HEIGHT - 1;
 
-    int corners[4][2] = {
-        {left, top},        
-        {right, top},       
-        {left, bottom},   
-        {right, bottom}   
-    };
-    for (int i = 0; i < 4; i++) {
-        int tileX = corners[i][0] / TILE_SIZE;
-        int tileY = corners[i][1] / TILE_SIZE;
+    for (int y = top; y <= bottom; y++) {
+        for (int x = left; x <= right; x++) {
+            int tileX = x / TILE_SIZE;
+            int tileY = y / TILE_SIZE;
 
-        if (tileX >= 0 && tileX < MAP_WIDTH && tileY >= 0 && tileY < MAP_HEIGHT && tileMap1[tileY][tileX] == 2) {
-            addExplosion(player.x, player.y);
-            gameOver();
-
+            // Kiểm tra nếu pixel của nhân vật rơi vào vùng gai (tile 2)
+            if (tileX >= 0 && tileX < MAP_WIDTH && tileY >= 0 && tileY < MAP_HEIGHT && tileMap1[tileY][tileX] == 2) {
+                addExplosion(player.x, player.y);
+                gameOver();
+            }
         }
     }
+
 
     return false; 
 }

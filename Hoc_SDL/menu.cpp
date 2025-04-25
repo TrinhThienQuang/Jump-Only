@@ -23,6 +23,7 @@ void loadMenuAssets() {
         std::cout << "Failed to load menu background! Error: " << IMG_GetError() << std::endl;
     }
 }
+
 //  Load ảnh nền menu Level
 void loadLevelMenuAssets() {
     levelMenuBackground = IMG_LoadTexture(renderer, "image/level.png");
@@ -42,7 +43,6 @@ void loadOptionsMenuAssets() {
         std::cout << "Failed to load options assets! Error: " << IMG_GetError() << std::endl;
     }
 }
-
 
 
 bool isInsideButton(int x, int y) {
