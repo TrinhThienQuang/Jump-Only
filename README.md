@@ -2,20 +2,21 @@
 
 ![image](https://github.com/user-attachments/assets/ce188aee-9cdb-474b-ae5c-075441978f55)
 
-Video giải thích về code và hướng dẫn chơi :
+Video giải thích về code và hướng dẫn chơi : [Video](https://drive.google.com/file/d/1bENQcU_DE0Ugfbklx-VwjmQD9q99jMVT/view?usp=drive_link)
 
 
 
 ## Mục lục
 
 1. [Giới thiệu](#giới-thiệu)
-2. [Các màn chơi](#các-màn-chơi)
-3. [Thành phần trong game](#thành-phần-trong-game)
-4. [Cách chơi](#cách-chơi)
-5. [Đồ họa & Âm thanh](#đồ-họa--âm-thanh)
-6. [Mẹo](#mẹo)
-7. [Cấu trúc mã nguồn](#cấu-trúc-mã-nguồn)
-8. [Tổng kết](#tổng-kết)
+2. [Cách tải game](#cách-tải-game)
+3. [Các màn chơi](#các-màn-chơi)
+4. [Thành phần trong game](#thành-phần-trong-game)
+5. [Cách chơi](#cách-chơi)
+6. [Đồ họa & Âm thanh](#đồ-họa--âm-thanh)
+7. [Mẹo](#mẹo)
+8. [Cấu trúc mã nguồn](#cấu-trúc-mã-nguồn)
+9. [Tổng kết](#tổng-kết)
 
 ## Giới thiệu
 
@@ -23,6 +24,20 @@ Jump Only là tựa game 2D platformer hành động đơn giản, nơi bạn h�
 Game được lấy cảm hứng từ “Jump Only” và “Geometry Dash”. Nhịp độ nhanh giúp rèn luyện phản xạ cực tốt – chỉ cần sai một li là phải chơi lại từ đầu!
 
 ![image](https://github.com/user-attachments/assets/a2030327-e633-43bb-93da-1e4023b6fc3f)
+
+
+## Cách tải game
+- Cách 1 :
+
+   - Chạy file main.exe để chơi hoặc
+   - Sử dụng [mingw64](https://www.mingw-w64.org/) và các thư viện [SDL2](https://www.libsdl.org/) đi kèm để build file main.cpp. Chạy file vừa build được để chơi.
+   - Khuyến cáo sử dụng Visual Studio 2022 hoặc các IDE có khả năng đọc file cmake.
+
+- Cách 2 :
+
+   - Tải file [mingw64](https://www.mingw-w64.org/)
+   - Tải file zip từ [File tải game](https://drive.google.com/file/d/1RO7faRUJTYL2g-p7TLXjPP25oVAy9ckv/view?usp=drive_link)
+   - Giải nén file và mở file .exe sau đó tận hưởng game thôi.
 
 ## Các màn chơi
 
